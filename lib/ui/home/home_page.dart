@@ -16,19 +16,21 @@ class HomePage extends StatelessWidget {
       body: ListenableBuilder(
         listenable: viewModel,
         builder: (_, buildContext) {
-          return Center(
-            child: Padding(
-              padding: EdgeInsetsGeometry.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(viewModel.imageName, style: Theme.of(context).textTheme.headlineLarge),
-                  SizedBox(height: 16.0),
-                  Expanded(child: Image(image: AssetImage(viewModel.imageAssetPath))),
-                  SizedBox(height: 16.0),
-                  ElevatedButton(onPressed: viewModel.toggleImage, child: viewModel.toggleIcon),
-                  SizedBox(height: 16.0),
-                ],
+          return SafeArea(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsetsGeometry.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(viewModel.imageName, style: Theme.of(context).textTheme.headlineLarge),
+                    SizedBox(height: 16.0),
+                    Expanded(child: Image(image: AssetImage(viewModel.imageAssetPath))),
+                    SizedBox(height: 16.0),
+                    ElevatedButton(onPressed: viewModel.toggleImage, child: viewModel.toggleIcon),
+                    SizedBox(height: 16.0),
+                  ],
+                ),
               ),
             ),
           );
