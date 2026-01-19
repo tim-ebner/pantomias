@@ -38,6 +38,9 @@ class ImageMetaInfoRepository {
       ImageMetaInfo(name: "Regenschirm", imageUrl: 'assets/images/pants/umbrella.webp'),
       ImageMetaInfo(name: "Einhorn", imageUrl: 'assets/images/pants/unicorn.webp'),
       ImageMetaInfo(name: "Volleyball", imageUrl: 'assets/images/pants/volleyball.webp'),
+      ImageMetaInfo(name: "Affe", imageUrl: 'assets/images/pants/monkey.webp'),
+      ImageMetaInfo(name: "Offenes Buch", imageUrl: 'assets/images/pants/open_book.webp'),
+      ImageMetaInfo(name: "Fußball", imageUrl: 'assets/images/pants/soccer_ball.webp'),
     ];
   }
 }
