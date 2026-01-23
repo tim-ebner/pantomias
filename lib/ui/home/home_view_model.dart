@@ -19,7 +19,7 @@ class HomeViewModel extends ChangeNotifier {
   late String _imageName;
   String get imageName => _isImageShown ? _imageName : 'Versteckt';
   late String _currentImageAssetPath;
-  String get imageAssetPath => _isImageShown ? _currentImageAssetPath : 'assets/images/hidden.png';
+  String get imageAssetPath => _isImageShown ? _currentImageAssetPath : 'assets/images/hidden.webp';
   final Icon _hideIcon = Icon(Icons.visibility_off, size: 30.0);
   final Icon _showIcon = Icon(Icons.visibility, size: 30.0);
   Icon get toggleIcon => _isImageShown ? _hideIcon : _showIcon;
