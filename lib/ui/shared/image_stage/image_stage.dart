@@ -26,25 +26,16 @@ class ImageStage extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
             Expanded(
-              child: Center(
-                child: Image.asset(
-                  viewModel.imageAssetPath,
-                  fit: BoxFit.contain,
+              child: GestureDetector(
+                key: const ValueKey('image-stage-picture'),
+                behavior: HitTestBehavior.opaque,
+                onTap: viewModel.toggleImage,
+                child: Center(
+                  child: Image.asset(
+                    viewModel.imageAssetPath,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            IconButton.filledTonal(
-              key: const ValueKey('toggle-image-button'),
-              tooltip: viewModel.isImageShown
-                  ? 'Bild ausblenden'
-                  : 'Bild anzeigen',
-              onPressed: viewModel.toggleImage,
-              icon: Icon(
-                viewModel.isImageShown
-                    ? Icons.visibility_off
-                    : Icons.visibility,
-                size: 30.0,
               ),
             ),
           ],

@@ -22,9 +22,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey('quick-next-button')), findsOneWidget);
-      expect(find.byKey(const ValueKey('toggle-image-button')), findsOneWidget);
+      expect(find.byKey(const ValueKey('toggle-image-button')), findsNothing);
 
-      await tester.tap(find.byKey(const ValueKey('toggle-image-button')));
+      await tester.tap(find.byKey(const ValueKey('image-stage-picture')));
       await tester.pumpAndSettle();
 
       expect(find.text('Versteckt'), findsOneWidget);
