@@ -8,6 +8,10 @@ class HomePage extends StatelessWidget {
 
   final HomeViewModel viewModel;
 
+  static const _titleBarBackgroundColor = Color(0xFFF3FBF8);
+  static const _titleBarDividerColor = Color(0xFFE3ECE8);
+  static const _brandColor = Color(0xFF006D5B);
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -15,8 +19,36 @@ class HomePage extends StatelessWidget {
       builder: (context, child) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text('Pantomias'),
+            backgroundColor: _titleBarBackgroundColor,
+            foregroundColor: _brandColor,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0.0,
+            scrolledUnderElevation: 0.0,
+            centerTitle: true,
+            toolbarHeight: 80.0,
+            systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarColor: _titleBarBackgroundColor,
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light,
+            ),
+            shape: const Border(
+              bottom: BorderSide(color: _titleBarDividerColor),
+            ),
+            iconTheme: const IconThemeData(color: _brandColor, size: 32.0),
+            actionsIconTheme: const IconThemeData(
+              color: _brandColor,
+              size: 32.0,
+            ),
+            title: const Text(
+              'Pantomias',
+              style: TextStyle(
+                color: _brandColor,
+                fontSize: 40.0,
+                fontWeight: FontWeight.w900,
+                height: 1.0,
+                letterSpacing: 0.0,
+              ),
+            ),
             actions: [
               if (viewModel.screenState != HomeScreenState.start)
                 IconButton(
