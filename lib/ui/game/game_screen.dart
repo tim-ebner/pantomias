@@ -32,22 +32,6 @@ class GameScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                viewModel.roundLimit == null
-                    ? 'Runde ${viewModel.currentRound}'
-                    : 'Runde ${viewModel.currentRound} von ${viewModel.roundLimit}',
-                key: const ValueKey('round-label'),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 6.0),
-              Text(
-                'Am Zug: ${activePlayer.name}',
-                key: const ValueKey('active-player-label'),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 12.0),
               ScoreBoard(
                 players: viewModel.players,
                 activePlayerIndex: viewModel.activePlayerIndex,

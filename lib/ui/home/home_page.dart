@@ -29,8 +29,13 @@ class HomePage extends StatelessWidget {
             surfaceTintColor: Colors.transparent,
             elevation: 0.0,
             scrolledUnderElevation: 0.0,
-            centerTitle: true,
-            toolbarHeight: 80.0,
+            centerTitle: viewModel.screenState != HomeScreenState.scoreGame,
+            toolbarHeight: viewModel.screenState == HomeScreenState.scoreGame
+                ? 112.0
+                : 80.0,
+            titleSpacing: viewModel.screenState == HomeScreenState.scoreGame
+                ? 24.0
+                : NavigationToolbar.kMiddleSpacing,
             systemOverlayStyle: const SystemUiOverlayStyle(
               statusBarColor: _titleBarBackgroundColor,
               statusBarIconBrightness: Brightness.dark,
@@ -44,16 +49,7 @@ class HomePage extends StatelessWidget {
               color: _brandColor,
               size: 32.0,
             ),
-            title: const Text(
-              'Pantomias',
-              style: TextStyle(
-                color: _brandColor,
-                fontSize: 40.0,
-                fontWeight: FontWeight.w900,
-                height: 1.0,
-                letterSpacing: 0.0,
-              ),
-            ),
+            title: _buildAppBarTitle(),
             actions: [
               if (viewModel.screenState != HomeScreenState.start)
                 IconButton(
@@ -102,5 +98,68 @@ class HomePage extends StatelessWidget {
         onShowModeSelection: viewModel.showModeSelection,
       ),
     };
+  }
+
+  Widget _buildAppBarTitle() {
+    if (viewModel.screenState == HomeScreenState.scoreGame) {
+      return ListenableBuilder(
+        listenable: viewModel.gameViewModel,
+        builder: (context, child) {
+          final activePlayer = viewModel.gameViewModel.activePlayer;
+          if (activePlayer == null) {
+            return const SizedBox.shrink();
+          }
+
+          final roundLabel = viewModel.gameViewModel.roundLimit == null
+              ? 'Runde ${viewModel.gameViewModel.currentRound}'
+              : 'Runde ${viewModel.gameViewModel.currentRound} von ${viewModel.gameViewModel.roundLimit}';
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                roundLabel,
+                key: const ValueKey('round-label'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Color(0xFF243B34),
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                  height: 1.1,
+                  letterSpacing: 0.0,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Text(
+                'Am Zug: ${activePlayer.name}',
+                key: const ValueKey('active-player-label'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: _brandColor,
+                  fontSize: 40.0,
+                  fontWeight: FontWeight.w900,
+                  height: 1.0,
+                  letterSpacing: 0.0,
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return const Text(
+      'Pantomias',
+      style: TextStyle(
+        color: _brandColor,
+        fontSize: 40.0,
+        fontWeight: FontWeight.w900,
+        height: 1.0,
+        letterSpacing: 0.0,
+      ),
+    );
   }
 }
