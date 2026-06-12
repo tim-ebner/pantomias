@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'result_view_model.dart';
@@ -161,11 +163,45 @@ class _RestartGameButton extends StatelessWidget {
   }
 }
 
-class _WinnerCard extends StatelessWidget {
+class _WinnerCard extends StatefulWidget {
   const _WinnerCard({required this.player, required this.scoreLabel});
 
   final ResultPlayerScore player;
   final String scoreLabel;
+
+  @override
+  State<_WinnerCard> createState() => _WinnerCardState();
+}
+
+class _WinnerCardState extends State<_WinnerCard> {
+  static const _praiseMessages = [
+    'Souveräner Auftritt!',
+    'Super Spiel!',
+    'Beschde!',
+    'Geil Geil Geil!',
+    'Abgeliefert!',
+    'Päääm!',
+  ];
+
+  late String _praiseMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _praiseMessage = _randomPraiseMessage();
+  }
+
+  @override
+  void didUpdateWidget(_WinnerCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.player != widget.player) {
+      _praiseMessage = _randomPraiseMessage();
+    }
+  }
+
+  String _randomPraiseMessage() {
+    return _praiseMessages[Random().nextInt(_praiseMessages.length)];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +224,7 @@ class _WinnerCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      player.name,
+                      widget.player.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -200,11 +236,11 @@ class _WinnerCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6.0),
-                    const Text(
-                      'Souveräner Auftritt!',
+                    Text(
+                      _praiseMessage,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: ResultScreen._mutedTextColor,
                         fontSize: 17.0,
                         fontWeight: FontWeight.w600,
@@ -216,7 +252,7 @@ class _WinnerCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16.0),
-              _WinnerScorePill(label: scoreLabel),
+              _WinnerScorePill(label: widget.scoreLabel),
             ],
           ),
         ),
