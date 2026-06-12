@@ -97,62 +97,127 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _StartTile extends StatelessWidget {
+class _StartTile extends StatefulWidget {
   const _StartTile({required this.size});
 
   final double size;
 
+  @override
+  State<_StartTile> createState() => _StartTileState();
+}
+
+class _StartTileState extends State<_StartTile>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _fadeController;
+  late final Animation<double> _opacity;
+
   static const _brandColor = HomeScreen._brandColor;
   static const _tileShadowColor = HomeScreen._tileShadowColor;
+  static const _minimumOpacity = 0.50;
+
+  @override
+  void initState() {
+    super.initState();
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    );
+    _opacity = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(
+          begin: 1.0,
+          end: _minimumOpacity,
+        ).chain(CurveTween(curve: Curves.easeInOutSine)),
+        weight: 1.0,
+      ),
+      TweenSequenceItem(
+        tween: Tween(
+          begin: _minimumOpacity,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOutSine)),
+        weight: 1.0,
+      ),
+    ]).animate(_fadeController);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncAnimation();
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
+  }
+
+  void _syncAnimation() {
+    final reduceMotion =
+        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    final shouldAnimate = TickerMode.valuesOf(context).enabled && !reduceMotion;
+
+    if (shouldAnimate) {
+      if (!_fadeController.isAnimating) {
+        _fadeController.repeat();
+      }
+    } else {
+      _fadeController.stop();
+      _fadeController.value = 0.0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = (size * 0.32).clamp(72.0, 112.0);
-    final spacing = (size * 0.08).clamp(16.0, 28.0);
-    final padding = (size * 0.09).clamp(22.0, 32.0);
+    final iconSize = (widget.size * 0.32).clamp(72.0, 112.0);
+    final spacing = (widget.size * 0.08).clamp(16.0, 28.0);
+    final padding = (widget.size * 0.09).clamp(22.0, 32.0);
 
     return Align(
-      child: SizedBox.square(
-        dimension: size,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: _brandColor, width: 5.0),
-            borderRadius: BorderRadius.circular(50.0),
-            boxShadow: const [
-              BoxShadow(
-                color: _tileShadowColor,
-                offset: Offset(0.0, 10.0),
-                spreadRadius: -1.0,
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(padding),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.theater_comedy_outlined,
-                  color: _brandColor,
-                  size: iconSize,
-                ),
-                SizedBox(height: spacing),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    "Los geht's!",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: _brandColor,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.0,
-                      height: 1.0,
-                    ),
-                  ),
+      child: FadeTransition(
+        opacity: _opacity,
+        child: SizedBox.square(
+          dimension: widget.size,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: _brandColor, width: 5.0),
+              borderRadius: BorderRadius.circular(50.0),
+              boxShadow: const [
+                BoxShadow(
+                  color: _tileShadowColor,
+                  offset: Offset(0.0, 10.0),
+                  spreadRadius: -1.0,
                 ),
               ],
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(padding),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.theater_comedy_outlined,
+                    color: _brandColor,
+                    size: iconSize,
+                  ),
+                  SizedBox(height: spacing),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "Los geht's!",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        color: _brandColor,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.0,
+                        height: 1.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -235,7 +235,7 @@ Future<void> _pumpApp(
   await tester.pumpWidget(
     MyApp(scoredGameSettingsRepository: settingsRepository),
   );
-  await tester.pumpAndSettle();
+  await tester.pump();
 }
 
 Future<ScoredGameSettingsRepository> _createSettingsRepository() async {
