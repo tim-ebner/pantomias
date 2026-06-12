@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:pantomias/ui/home/widgets/next_button.dart';
+import 'package:pantomias/ui/shared/commons.dart';
 
 import 'result_view_model.dart';
 
@@ -15,8 +17,6 @@ class ResultScreen extends StatelessWidget {
   final VoidCallback onRestartGame;
 
   static const _backgroundColor = Color(0xFFF3FBF8);
-  static const _brandColor = Color(0xFF007260);
-  static const _accentColor = Color(0xFF2ED8B0);
   static const _winnerScoreColor = Color(0xFF00745D);
   static const _mutedTextColor = Color(0xFF6B7A74);
   static const _rankTextColor = Color(0xFFB5CAC2);
@@ -57,7 +57,7 @@ class ResultScreen extends StatelessWidget {
                             'Ergebnis',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: _brandColor,
+                              color: brandColor,
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
                               height: 1.05,
@@ -102,7 +102,13 @@ class ResultScreen extends StatelessWidget {
                           ],
                           const SizedBox(height: 20.0),
                           const Spacer(),
-                          _RestartGameButton(onPressed: onRestartGame),
+                          NextButton(
+                            key: const ValueKey('new-scored-game-button'),
+                            icon: Icons.replay,
+                            label: 'Neues Punktespiel',
+                            labelMaxLines: 2,
+                            onPressed: onRestartGame,
+                          ),
                         ],
                       ),
                     ),
@@ -118,48 +124,6 @@ class ResultScreen extends StatelessWidget {
 
   String _scoreLabel(int score) {
     return '$score Pkt';
-  }
-}
-
-class _RestartGameButton extends StatelessWidget {
-  const _RestartGameButton({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30.0),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xFF005246),
-            offset: Offset(0.0, 8.0),
-            blurRadius: 0.0,
-          ),
-        ],
-      ),
-      child: FilledButton.icon(
-        key: const ValueKey('new-scored-game-button'),
-        onPressed: onPressed,
-        icon: const Icon(Icons.replay),
-        label: const Text('Neues Punktespiel'),
-        style: FilledButton.styleFrom(
-          backgroundColor: ResultScreen._accentColor,
-          foregroundColor: ResultScreen._brandColor,
-          minimumSize: const Size.fromHeight(72.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          textStyle: const TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.w700,
-            height: 1.0,
-            letterSpacing: 0.0,
-          ),
-        ),
-      ),
-    );
   }
 }
 
@@ -214,7 +178,7 @@ class _WinnerCardState extends State<_WinnerCard> {
           padding: const EdgeInsets.fromLTRB(20.0, 28.0, 20.0, 16.0),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: ResultScreen._accentColor, width: 2.0),
+            border: Border.all(color: accentColor, width: 2.0),
             borderRadius: BorderRadius.circular(28.0),
           ),
           child: Row(
@@ -334,9 +298,7 @@ class _RankedPlayerCard extends StatelessWidget {
     final borderColor = rank == 2
         ? ResultScreen._softBorderColor
         : ResultScreen._quietBorderColor;
-    final scoreColor = rank == 2
-        ? ResultScreen._brandColor
-        : ResultScreen._mutedTextColor;
+    final scoreColor = rank == 2 ? brandColor : ResultScreen._mutedTextColor;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14.0),

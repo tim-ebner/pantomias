@@ -43,6 +43,20 @@ class MyApp extends StatelessWidget {
         title: 'Pantomias',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+          textTheme: const TextTheme(
+            headlineLarge: TextStyle(
+              fontSize: 40.0,
+              fontWeight: FontWeight.w900,
+              height: 1.0,
+              letterSpacing: 0.0,
+            ),
+            headlineMedium: TextStyle(
+              fontSize: 36.0,
+              fontWeight: FontWeight.w600,
+              height: 1.0,
+              letterSpacing: 0.0,
+            ),
+          ),
         ),
         routerConfig: router(),
       ),

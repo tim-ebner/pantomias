@@ -21,7 +21,7 @@ class ImageStage extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
             ),
             const SizedBox(height: 16.0),

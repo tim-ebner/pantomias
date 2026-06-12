@@ -82,14 +82,6 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           body: SafeArea(child: _buildBody()),
-          floatingActionButton:
-              viewModel.screenState == HomeScreenState.quickStart
-              ? FloatingActionButton(
-                  key: const ValueKey('quick-next-button'),
-                  onPressed: viewModel.quickStartViewModel.nextImage,
-                  child: const Icon(Icons.navigate_next),
-                )
-              : null,
         );
       },
     );

@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:pantomias/ui/home/widgets/next_button.dart';
+import 'package:pantomias/ui/shared/commons.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -12,25 +14,10 @@ class HomeScreen extends StatelessWidget {
   final VoidCallback onStartQuickStart;
   final VoidCallback onStartScoredSetup;
 
-  static const _brandColor = Color(0xFF006D5B);
-  static const _quickStartColor = Color(0xFF2DDBB7);
-  static const _pageBackgroundColor = Color(0xFFF3FBF8);
-  static const _tileShadowColor = Color(0xFF005B4C);
-  static const _buttonShadowColor = Color(0x33006D5B);
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        const horizontalPadding = 24.0;
-        const topPadding = 18.0;
-        const bottomPadding = 28.0;
-        const tileGap = 24.0;
-        const buttonGap = 16.0;
-        const quickStartButtonHeight = 88.0;
-        const scoredSetupButtonHeight = 96.0;
-        const maxContentWidth = 420.0;
-
         final contentWidth = math.min(
           maxContentWidth,
           math.max(0.0, constraints.maxWidth - horizontalPadding * 2),
@@ -41,12 +28,12 @@ class HomeScreen extends StatelessWidget {
             bottomPadding -
             tileGap -
             buttonGap -
-            quickStartButtonHeight -
-            scoredSetupButtonHeight;
+            nextButtonHeight -
+            nextButtonHeight;
         final tileSize = math.min(contentWidth, math.max(220.0, maxTileHeight));
 
         return ColoredBox(
-          color: _pageBackgroundColor,
+          color: pageBackgroundColor,
           child: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(
@@ -63,24 +50,18 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     _StartTile(size: tileSize),
                     const SizedBox(height: tileGap),
-                    _ModeButton(
+                    NextButton(
                       key: const ValueKey('quick-start-button'),
-                      height: quickStartButtonHeight,
-                      backgroundColor: _quickStartColor,
-                      foregroundColor: _brandColor,
-                      shadowColor: _tileShadowColor,
+                      shadowColor: tileShadowColor,
                       icon: Icons.play_circle_outline,
                       label: 'Schnellstart',
-                      labelMaxLines: 1,
                       onPressed: onStartQuickStart,
                     ),
                     const SizedBox(height: buttonGap),
-                    _ModeButton(
+                    NextButton(
                       key: const ValueKey('scored-setup-button'),
-                      height: scoredSetupButtonHeight,
                       backgroundColor: Colors.white,
-                      foregroundColor: _brandColor,
-                      shadowColor: _buttonShadowColor,
+                      shadowColor: buttonShadowColor,
                       icon: Icons.workspace_premium_outlined,
                       label: 'Spiel mit Punkten',
                       labelMaxLines: 2,
@@ -111,8 +92,6 @@ class _StartTileState extends State<_StartTile>
   late final AnimationController _fadeController;
   late final Animation<double> _opacity;
 
-  static const _brandColor = HomeScreen._brandColor;
-  static const _tileShadowColor = HomeScreen._tileShadowColor;
   static const _minimumOpacity = 0.50;
 
   @override
@@ -181,11 +160,11 @@ class _StartTileState extends State<_StartTile>
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: _brandColor, width: 5.0),
+              border: Border.all(color: brandColor, width: 5.0),
               borderRadius: BorderRadius.circular(50.0),
               boxShadow: const [
                 BoxShadow(
-                  color: _tileShadowColor,
+                  color: tileShadowColor,
                   offset: Offset(0.0, 10.0),
                   spreadRadius: -1.0,
                 ),
@@ -199,7 +178,7 @@ class _StartTileState extends State<_StartTile>
                 children: [
                   Icon(
                     Icons.theater_comedy_outlined,
-                    color: _brandColor,
+                    color: brandColor,
                     size: iconSize,
                   ),
                   SizedBox(height: spacing),
@@ -209,7 +188,7 @@ class _StartTileState extends State<_StartTile>
                       "Los geht's!",
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        color: _brandColor,
+                        color: brandColor,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.0,
                         height: 1.0,
@@ -218,126 +197,6 @@ class _StartTileState extends State<_StartTile>
                   ),
                 ],
               ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ModeButton extends StatelessWidget {
-  const _ModeButton({
-    super.key,
-    required this.height,
-    required this.backgroundColor,
-    required this.foregroundColor,
-    required this.shadowColor,
-    required this.icon,
-    required this.label,
-    required this.labelMaxLines,
-    required this.onPressed,
-  });
-
-  final double height;
-  final Color backgroundColor;
-  final Color foregroundColor;
-  final Color shadowColor;
-  final IconData icon;
-  final String label;
-  final int labelMaxLines;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(36.0),
-        boxShadow: [
-          BoxShadow(
-            color: shadowColor,
-            offset: const Offset(0.0, 9.0),
-            blurRadius: 0.0,
-          ),
-          if (backgroundColor == Colors.white)
-            const BoxShadow(
-              color: Color(0x18006D5B),
-              offset: Offset(0.0, 18.0),
-              blurRadius: 0.0,
-              spreadRadius: -5.0,
-            ),
-        ],
-      ),
-      child: Material(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(36.0),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onPressed,
-          child: SizedBox(
-            height: height,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final horizontalPadding = (constraints.maxWidth * 0.06).clamp(
-                  18.0,
-                  28.0,
-                );
-                final sideSpacing = (constraints.maxWidth * 0.055).clamp(
-                  16.0,
-                  24.0,
-                );
-                final iconSize = (constraints.maxWidth * 0.11).clamp(
-                  34.0,
-                  42.0,
-                );
-                final chevronSize = (constraints.maxWidth * 0.095).clamp(
-                  30.0,
-                  36.0,
-                );
-                final labelFontSize = (constraints.maxWidth * 0.064).clamp(
-                  20.0,
-                  28.0,
-                );
-                final labelStyle = Theme.of(context).textTheme.headlineMedium
-                    ?.copyWith(
-                      color: foregroundColor,
-                      fontSize: labelFontSize,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.0,
-                      height: 1.08,
-                    );
-                final labelText = Text(
-                  label,
-                  maxLines: labelMaxLines,
-                  overflow: labelMaxLines == 1
-                      ? TextOverflow.visible
-                      : TextOverflow.ellipsis,
-                  softWrap: labelMaxLines > 1,
-                  textAlign: TextAlign.center,
-                  style: labelStyle,
-                );
-
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  child: Row(
-                    children: [
-                      Icon(icon, color: foregroundColor, size: iconSize),
-                      SizedBox(width: sideSpacing),
-                      Expanded(
-                        child: labelMaxLines == 1
-                            ? FittedBox(fit: BoxFit.scaleDown, child: labelText)
-                            : labelText,
-                      ),
-                      SizedBox(width: sideSpacing),
-                      Icon(
-                        Icons.chevron_right,
-                        color: foregroundColor,
-                        size: chevronSize,
-                      ),
-                    ],
-                  ),
-                );
-              },
             ),
           ),
         ),

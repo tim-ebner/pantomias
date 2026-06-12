@@ -30,6 +30,7 @@ class PointModeSettingsViewModel extends ChangeNotifier {
   }
 
   final ScoredGameSettingsRepository _scoredGameSettingsRepository;
+  static const _turnTimeLimitStep = Duration(seconds: 30);
 
   int _nextSetupPlayerId = 0;
   List<SetupPlayerDraft> _setupPlayers = [];
@@ -48,7 +49,7 @@ class PointModeSettingsViewModel extends ChangeNotifier {
   }
 
   bool get isTurnTimeLimitValid {
-    return _isPositiveOptionalInt(_turnTimeLimitText);
+    return _isPositiveOptionalTurnTimeLimit(_turnTimeLimitText);
   }
 
   bool get canStartScoredGame =>
@@ -92,8 +93,58 @@ class PointModeSettingsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void incrementRoundLimit() {
+    final currentRoundLimit = _parseOptionalPositiveInt(_roundLimitText);
+    if (currentRoundLimit == null && _roundLimitText.trim().isNotEmpty) {
+      return;
+    }
+
+    _roundLimitText = ((currentRoundLimit ?? 0) + 1).toString();
+    notifyListeners();
+  }
+
+  void decrementRoundLimit() {
+    final currentRoundLimit = _parseOptionalPositiveInt(_roundLimitText);
+    if (currentRoundLimit == null) {
+      return;
+    }
+
+    final nextRoundLimit = currentRoundLimit - 1;
+    _roundLimitText = nextRoundLimit > 0 ? nextRoundLimit.toString() : '';
+    notifyListeners();
+  }
+
   void updateTurnTimeLimit(String turnTimeLimit) {
     _turnTimeLimitText = turnTimeLimit;
+    notifyListeners();
+  }
+
+  void incrementTurnTimeLimit() {
+    final currentTurnTimeLimit = _parseOptionalTurnTimeLimit(
+      _turnTimeLimitText,
+    );
+    if (currentTurnTimeLimit == null && _turnTimeLimitText.trim().isNotEmpty) {
+      return;
+    }
+
+    _turnTimeLimitText = _formatTurnTimeLimit(
+      (currentTurnTimeLimit ?? Duration.zero) + _turnTimeLimitStep,
+    );
+    notifyListeners();
+  }
+
+  void decrementTurnTimeLimit() {
+    final currentTurnTimeLimit = _parseOptionalTurnTimeLimit(
+      _turnTimeLimitText,
+    );
+    if (currentTurnTimeLimit == null) {
+      return;
+    }
+
+    final nextTurnTimeLimit = currentTurnTimeLimit - _turnTimeLimitStep;
+    _turnTimeLimitText = nextTurnTimeLimit > Duration.zero
+        ? _formatTurnTimeLimit(nextTurnTimeLimit)
+        : '';
     notifyListeners();
   }
 
@@ -150,30 +201,72 @@ class PointModeSettingsViewModel extends ChangeNotifier {
   }
 
   int? _parseRoundLimit() {
-    final trimmedRoundLimit = _roundLimitText.trim();
-    if (trimmedRoundLimit.isEmpty) {
-      return null;
-    }
-
-    return int.parse(trimmedRoundLimit);
+    return _parseOptionalPositiveInt(_roundLimitText);
   }
 
   Duration? _parseTurnTimeLimit() {
-    final trimmedTurnTimeLimit = _turnTimeLimitText.trim();
-    if (trimmedTurnTimeLimit.isEmpty) {
+    return _parseOptionalTurnTimeLimit(_turnTimeLimitText);
+  }
+
+  int? _parseOptionalPositiveInt(String value) {
+    final trimmedValue = value.trim();
+    if (trimmedValue.isEmpty) {
       return null;
     }
 
-    return Duration(minutes: int.parse(trimmedTurnTimeLimit));
+    final parsedValue = int.tryParse(trimmedValue);
+    if (parsedValue == null || parsedValue <= 0) {
+      return null;
+    }
+
+    return parsedValue;
   }
 
   bool _isPositiveOptionalInt(String value) {
+    return value.trim().isEmpty || _parseOptionalPositiveInt(value) != null;
+  }
+
+  bool _isPositiveOptionalTurnTimeLimit(String value) {
+    return value.trim().isEmpty || _parseOptionalTurnTimeLimit(value) != null;
+  }
+
+  Duration? _parseOptionalTurnTimeLimit(String value) {
     final trimmedValue = value.trim();
     if (trimmedValue.isEmpty) {
-      return true;
+      return null;
     }
 
-    final parsedValue = int.tryParse(trimmedValue);
-    return parsedValue != null && parsedValue > 0;
+    final timeParts = trimmedValue.split(':');
+    if (timeParts.length == 1) {
+      final minutes = int.tryParse(timeParts.single);
+      if (minutes == null || minutes <= 0) {
+        return null;
+      }
+
+      return Duration(minutes: minutes);
+    }
+
+    if (timeParts.length != 2) {
+      return null;
+    }
+
+    final minutes = int.tryParse(timeParts[0]);
+    final seconds = int.tryParse(timeParts[1]);
+    if (minutes == null ||
+        seconds == null ||
+        minutes < 0 ||
+        seconds < 0 ||
+        seconds > 59) {
+      return null;
+    }
+
+    final duration = Duration(minutes: minutes, seconds: seconds);
+    return duration > Duration.zero ? duration : null;
+  }
+
+  String _formatTurnTimeLimit(Duration duration) {
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
   }
 }

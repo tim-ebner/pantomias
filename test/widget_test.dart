@@ -66,10 +66,10 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
     await tester.pumpAndSettle();
 
-    expect(_textFormField(tester, 'player-name-field-0').initialValue, 'Ada');
-    expect(_textFormField(tester, 'player-name-field-1').initialValue, 'Ben');
-    expect(_textFormField(tester, 'round-limit-field').initialValue, '3');
-    expect(_textFormField(tester, 'turn-time-limit-field').initialValue, '2');
+    expect(_textFormFieldText(tester, 'player-name-field-0'), 'Ada');
+    expect(_textFormFieldText(tester, 'player-name-field-1'), 'Ben');
+    expect(_textFormFieldText(tester, 'round-limit-field'), '3');
+    expect(_textFormFieldText(tester, 'turn-time-limit-field'), '2');
 
     await tester.enterText(
       find.byKey(const ValueKey('player-name-field-0')),
@@ -100,7 +100,41 @@ void main() {
     await _enterScoredSetup(tester, time: '0');
 
     expect(_startScoredGameButton(tester).onPressed, isNull);
-    expect(find.text('Bitte positive Minutenzahl eingeben'), findsOneWidget);
+    expect(find.text('Bitte positive Zeit eingeben'), findsOneWidget);
+  });
+
+  testWidgets('scored setup steppers adjust rounds and timer', (tester) async {
+    await _openScoredSetup(tester);
+
+    await tester.tap(
+      find.byKey(const ValueKey('round-limit-increment-button')),
+    );
+    await tester.pump();
+    await tester.tap(
+      find.byKey(const ValueKey('round-limit-increment-button')),
+    );
+    await tester.pump();
+    await tester.tap(
+      find.byKey(const ValueKey('round-limit-decrement-button')),
+    );
+    await tester.pump();
+
+    expect(_textFormFieldText(tester, 'round-limit-field'), '1');
+
+    await tester.tap(
+      find.byKey(const ValueKey('turn-time-limit-increment-button')),
+    );
+    await tester.pump();
+    await tester.tap(
+      find.byKey(const ValueKey('turn-time-limit-increment-button')),
+    );
+    await tester.pump();
+    await tester.tap(
+      find.byKey(const ValueKey('turn-time-limit-decrement-button')),
+    );
+    await tester.pump();
+
+    expect(_textFormFieldText(tester, 'turn-time-limit-field'), '0:30');
   });
 
   testWidgets(
@@ -162,6 +196,31 @@ void main() {
     expect(find.text('Am Zug: Bob'), findsOneWidget);
     expect(_scoreText(tester, 0), '1');
     expect(find.text('1:00'), findsOneWidget);
+  });
+
+  testWidgets('timed scored game accepts seconds', (tester) async {
+    final turnTimeoutAlert = _FakeTurnTimeoutAlert();
+    await _startScoredGame(
+      tester,
+      time: '0:30',
+      turnTimeoutAlert: turnTimeoutAlert,
+    );
+
+    expect(find.text('0:30'), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 30));
+    await tester.pump();
+
+    expect(turnTimeoutAlert.playCount, 1);
+    expect(find.text('Zeit abgelaufen'), findsOneWidget);
+  });
+
+  testWidgets('scored setup blocks invalid timer seconds', (tester) async {
+    await _openScoredSetup(tester);
+    await _enterScoredSetup(tester, time: '1:60');
+
+    expect(_startScoredGameButton(tester).onPressed, isNull);
+    expect(find.text('Bitte positive Zeit eingeben'), findsOneWidget);
   });
 
   testWidgets('untimed scored game does not show or trigger the timer', (
@@ -255,10 +314,10 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
     await tester.pumpAndSettle();
 
-    expect(_textFormField(tester, 'player-name-field-0').initialValue, 'Alice');
-    expect(_textFormField(tester, 'player-name-field-1').initialValue, 'Bob');
-    expect(_textFormField(tester, 'round-limit-field').initialValue, '2');
-    expect(_textFormField(tester, 'turn-time-limit-field').initialValue, '3');
+    expect(_textFormFieldText(tester, 'player-name-field-0'), 'Alice');
+    expect(_textFormFieldText(tester, 'player-name-field-1'), 'Bob');
+    expect(_textFormFieldText(tester, 'round-limit-field'), '2');
+    expect(_textFormFieldText(tester, 'turn-time-limit-field'), '3');
   });
 
   testWidgets('new scored game restarts with same players and rounds', (
@@ -438,6 +497,11 @@ TextFormField _textFormField(WidgetTester tester, String key) {
   }
 
   return tester.widget<TextFormField>(field);
+}
+
+String _textFormFieldText(WidgetTester tester, String key) {
+  final field = _textFormField(tester, key);
+  return field.controller?.text ?? field.initialValue ?? '';
 }
 
 class _FakeTurnTimeoutAlert implements TurnTimeoutAlert {

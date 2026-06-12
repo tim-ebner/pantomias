@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pantomias/ui/home/widgets/next_button.dart';
 
 import 'point_mode_settings_view_model.dart';
 import 'widgets/player_name_field.dart';
@@ -55,7 +56,7 @@ class PointModeSettingsScreen extends StatelessWidget {
                   const SizedBox(height: 16.0),
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final roundLimitField = _NumberSetupField(
+                      final roundLimitField = _SteppedSetupField(
                         key: const ValueKey('round-limit-field'),
                         initialValue: viewModel.roundLimitText,
                         labelText: 'Runden (optional)',
@@ -63,16 +64,34 @@ class PointModeSettingsScreen extends StatelessWidget {
                             ? null
                             : 'Bitte positive Rundenzahl eingeben',
                         onChanged: viewModel.updateRoundLimit,
+                        onDecrement: viewModel.decrementRoundLimit,
+                        onIncrement: viewModel.incrementRoundLimit,
+                        decrementButtonKey: const ValueKey(
+                          'round-limit-decrement-button',
+                        ),
+                        incrementButtonKey: const ValueKey(
+                          'round-limit-increment-button',
+                        ),
                         textInputAction: TextInputAction.next,
                       );
-                      final turnTimeLimitField = _NumberSetupField(
+                      final turnTimeLimitField = _SteppedSetupField(
                         key: const ValueKey('turn-time-limit-field'),
                         initialValue: viewModel.turnTimeLimitText,
-                        labelText: 'Zeit in Minuten (optional)',
+                        labelText: 'Zeit (Min:Sek, optional)',
                         errorText: viewModel.isTurnTimeLimitValid
                             ? null
-                            : 'Bitte positive Minutenzahl eingeben',
+                            : 'Bitte positive Zeit eingeben',
                         onChanged: viewModel.updateTurnTimeLimit,
+                        onDecrement: viewModel.decrementTurnTimeLimit,
+                        onIncrement: viewModel.incrementTurnTimeLimit,
+                        decrementButtonKey: const ValueKey(
+                          'turn-time-limit-decrement-button',
+                        ),
+                        incrementButtonKey: const ValueKey(
+                          'turn-time-limit-increment-button',
+                        ),
+                        inputFormatters: [_DurationInputFormatter()],
+                        keyboardType: TextInputType.datetime,
                       );
 
                       if (constraints.maxWidth < 460.0) {
@@ -96,13 +115,14 @@ class PointModeSettingsScreen extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 24.0),
-                  FilledButton.icon(
+                  NextButton(
                     key: const ValueKey('start-scored-game-button'),
+                    icon: Icons.flag,
+                    label: 'Spiel starten',
+                    labelMaxLines: 2,
                     onPressed: viewModel.canStartScoredGame
                         ? onStartGame
-                        : null,
-                    icon: const Icon(Icons.flag),
-                    label: const Text('Spiel starten'),
+                        : () {},
                   ),
                 ],
               ),
@@ -114,13 +134,19 @@ class PointModeSettingsScreen extends StatelessWidget {
   }
 }
 
-class _NumberSetupField extends StatelessWidget {
-  const _NumberSetupField({
+class _SteppedSetupField extends StatefulWidget {
+  const _SteppedSetupField({
     super.key,
     required this.initialValue,
     required this.labelText,
     required this.errorText,
     required this.onChanged,
+    required this.onDecrement,
+    required this.onIncrement,
+    required this.decrementButtonKey,
+    required this.incrementButtonKey,
+    this.inputFormatters,
+    this.keyboardType = TextInputType.number,
     this.textInputAction = TextInputAction.done,
   });
 
@@ -128,21 +154,86 @@ class _NumberSetupField extends StatelessWidget {
   final String labelText;
   final String? errorText;
   final ValueChanged<String> onChanged;
+  final VoidCallback onDecrement;
+  final VoidCallback onIncrement;
+  final Key decrementButtonKey;
+  final Key incrementButtonKey;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType keyboardType;
   final TextInputAction textInputAction;
+
+  @override
+  State<_SteppedSetupField> createState() => _SteppedSetupFieldState();
+}
+
+class _SteppedSetupFieldState extends State<_SteppedSetupField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void didUpdateWidget(covariant _SteppedSetupField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != _controller.text) {
+      _controller.value = TextEditingValue(
+        text: widget.initialValue,
+        selection: TextSelection.collapsed(offset: widget.initialValue.length),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: initialValue,
+      controller: _controller,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
-        errorText: errorText,
-        labelText: labelText,
+        errorText: widget.errorText,
+        labelText: widget.labelText,
+        prefixIcon: IconButton(
+          key: widget.decrementButtonKey,
+          tooltip: 'Verringern',
+          onPressed: widget.onDecrement,
+          icon: const Icon(Icons.remove),
+        ),
+        suffixIcon: IconButton(
+          key: widget.incrementButtonKey,
+          tooltip: 'Erhöhen',
+          onPressed: widget.onIncrement,
+          icon: const Icon(Icons.add),
+        ),
       ),
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      keyboardType: TextInputType.number,
-      onChanged: onChanged,
-      textInputAction: textInputAction,
+      inputFormatters:
+          widget.inputFormatters ?? [FilteringTextInputFormatter.digitsOnly],
+      keyboardType: widget.keyboardType,
+      onChanged: widget.onChanged,
+      textInputAction: widget.textInputAction,
     );
+  }
+}
+
+class _DurationInputFormatter extends TextInputFormatter {
+  static final _durationPattern = RegExp(r'^\d*(?::\d{0,2})?$');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (_durationPattern.hasMatch(newValue.text)) {
+      return newValue;
+    }
+
+    return oldValue;
   }
 }
