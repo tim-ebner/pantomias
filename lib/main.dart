@@ -4,12 +4,7 @@ import 'package:pantomias/routing/router.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [Provider(create: (_) => ImageMetaInfoRepository())],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -18,10 +13,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Pantomias',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal)),
-      routerConfig: router(),
+    return MultiProvider(
+      providers: [Provider(create: (_) => ImageMetaInfoRepository())],
+      child: MaterialApp.router(
+        title: 'Pantomias',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        ),
+        routerConfig: router(),
+      ),
     );
   }
 }

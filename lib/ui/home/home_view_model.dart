@@ -4,47 +4,270 @@ import 'package:flutter/material.dart';
 import 'package:pantomias/data/model/image_meta_info.dart';
 import 'package:pantomias/data/model/image_meta_info_repository.dart';
 
-class HomeViewModel extends ChangeNotifier {
-  final ImageMetaInfoRepository _imageMetaInfoRepository;
+enum HomeScreenState { start, quickStart, scoreSetup, scoreGame, scoreResults }
 
+class SetupPlayerDraft {
+  SetupPlayerDraft({required this.id, this.name = ''});
+
+  final int id;
+  String name;
+}
+
+class PlayerScore {
+  PlayerScore({required this.name, this.score = 0});
+
+  final String name;
+  int score;
+}
+
+class HomeViewModel extends ChangeNotifier {
   HomeViewModel({required ImageMetaInfoRepository imageMetaInfoRepository})
     : _imageMetaInfoRepository = imageMetaInfoRepository {
-    resetGame();
+    _resetScoredSetup();
   }
+
+  static const hiddenImageAssetPath = 'assets/images/hidden.webp';
+
+  final ImageMetaInfoRepository _imageMetaInfoRepository;
+  final Random _random = Random();
+
+  HomeScreenState _screenState = HomeScreenState.start;
+  HomeScreenState get screenState => _screenState;
 
   bool _isImageShown = true;
   bool get isImageShown => _isImageShown;
 
-  late List<ImageMetaInfo> allImages;
-  late String _imageName;
-  String get imageName => _isImageShown ? _imageName : 'Versteckt';
-  late String _currentImageAssetPath;
-  String get imageAssetPath => _isImageShown ? _currentImageAssetPath : 'assets/images/hidden.webp';
-  final Icon _hideIcon = Icon(Icons.visibility_off, size: 30.0);
-  final Icon _showIcon = Icon(Icons.visibility, size: 30.0);
+  List<ImageMetaInfo> _remainingImages = [];
+  ImageMetaInfo? _currentImage;
+
+  String get imageName {
+    final currentImage = _currentImage;
+    if (currentImage == null) {
+      return '';
+    }
+
+    return _isImageShown ? currentImage.name : 'Versteckt';
+  }
+
+  String get imageAssetPath {
+    final currentImage = _currentImage;
+    if (currentImage == null || !_isImageShown) {
+      return hiddenImageAssetPath;
+    }
+
+    return currentImage.imageUrl;
+  }
+
+  final Icon _hideIcon = const Icon(Icons.visibility_off, size: 30.0);
+  final Icon _showIcon = const Icon(Icons.visibility, size: 30.0);
   Icon get toggleIcon => _isImageShown ? _hideIcon : _showIcon;
+
+  int _nextSetupPlayerId = 0;
+  List<SetupPlayerDraft> _setupPlayers = [];
+  List<SetupPlayerDraft> get setupPlayers => List.unmodifiable(_setupPlayers);
+
+  String _roundLimitText = '';
+  String get roundLimitText => _roundLimitText;
+
+  List<PlayerScore> _players = [];
+  List<PlayerScore> get players => List.unmodifiable(_players);
+
+  int _activePlayerIndex = 0;
+  int get activePlayerIndex => _activePlayerIndex;
+  PlayerScore? get activePlayer =>
+      _players.isEmpty ? null : _players[_activePlayerIndex];
+
+  int _completedTurns = 0;
+  int get completedTurns => _completedTurns;
+
+  int? _roundLimit;
+  int? get roundLimit => _roundLimit;
+
+  int get currentRound {
+    if (_players.isEmpty) {
+      return 1;
+    }
+
+    return (_completedTurns ~/ _players.length) + 1;
+  }
+
+  int? get totalTurns =>
+      _roundLimit == null ? null : _roundLimit! * _players.length;
+
+  bool get canRemoveSetupPlayer => _setupPlayers.length > 2;
+
+  bool get isRoundLimitValid {
+    final trimmedRoundLimit = _roundLimitText.trim();
+    if (trimmedRoundLimit.isEmpty) {
+      return true;
+    }
+
+    final parsedRoundLimit = int.tryParse(trimmedRoundLimit);
+    return parsedRoundLimit != null && parsedRoundLimit > 0;
+  }
+
+  bool get canStartScoredGame =>
+      _validSetupPlayerNames.length >= 2 && isRoundLimitValid;
+
+  List<String> get _validSetupPlayerNames {
+    return _setupPlayers
+        .map((player) => player.name.trim())
+        .where((playerName) => playerName.isNotEmpty)
+        .toList();
+  }
+
+  List<PlayerScore> get rankedPlayers {
+    final rankedPlayers = List<PlayerScore>.of(_players);
+    rankedPlayers.sort((first, second) => second.score.compareTo(first.score));
+    return rankedPlayers;
+  }
+
+  void showModeSelection() {
+    _screenState = HomeScreenState.start;
+    notifyListeners();
+  }
+
+  void startQuickStart() {
+    _screenState = HomeScreenState.quickStart;
+    _resetImages();
+    _nextImage(revealImage: true, notify: false);
+    notifyListeners();
+  }
+
+  void startScoredSetup() {
+    _screenState = HomeScreenState.scoreSetup;
+    _resetScoredSetup();
+    notifyListeners();
+  }
+
+  void addSetupPlayer() {
+    _setupPlayers.add(_createSetupPlayer());
+    notifyListeners();
+  }
+
+  void removeSetupPlayer(int playerId) {
+    if (!canRemoveSetupPlayer) {
+      return;
+    }
+
+    _setupPlayers.removeWhere((player) => player.id == playerId);
+    notifyListeners();
+  }
+
+  void updateSetupPlayerName(int playerId, String name) {
+    final playerIndex = _setupPlayers.indexWhere(
+      (player) => player.id == playerId,
+    );
+    if (playerIndex == -1) {
+      return;
+    }
+
+    _setupPlayers[playerIndex].name = name;
+    notifyListeners();
+  }
+
+  void updateRoundLimit(String roundLimit) {
+    _roundLimitText = roundLimit;
+    notifyListeners();
+  }
+
+  void startScoredGame() {
+    if (!canStartScoredGame) {
+      return;
+    }
+
+    _players = _validSetupPlayerNames
+        .map((playerName) => PlayerScore(name: playerName))
+        .toList();
+    _activePlayerIndex = 0;
+    _completedTurns = 0;
+    _roundLimit = _parseRoundLimit();
+    _screenState = HomeScreenState.scoreGame;
+    _resetImages();
+    _nextImage(revealImage: true, notify: false);
+    notifyListeners();
+  }
 
   void toggleImage() {
     _isImageShown = !_isImageShown;
     notifyListeners();
   }
 
-  void resetGame() {
-    _isImageShown = true;
-    allImages = _imageMetaInfoRepository.getAllImageMetaInfo();
-    nextImage();
+  void nextImage() {
+    _nextImage(revealImage: false);
+  }
+
+  void markGuessed() {
+    _completeScoredTurn(wasGuessed: true);
+  }
+
+  void markNotGuessed() {
+    _completeScoredTurn(wasGuessed: false);
+  }
+
+  void _completeScoredTurn({required bool wasGuessed}) {
+    if (_screenState != HomeScreenState.scoreGame || _players.isEmpty) {
+      return;
+    }
+
+    if (wasGuessed) {
+      _players[_activePlayerIndex].score += 1;
+    }
+
+    _completedTurns += 1;
+
+    if (_roundLimit != null && _completedTurns >= totalTurns!) {
+      _screenState = HomeScreenState.scoreResults;
+      _isImageShown = true;
+      notifyListeners();
+      return;
+    }
+
+    _activePlayerIndex = (_activePlayerIndex + 1) % _players.length;
+    _nextImage(revealImage: true, notify: false);
     notifyListeners();
   }
 
-  void nextImage() {
-    if (allImages.isEmpty) {
-      allImages = _imageMetaInfoRepository.getAllImageMetaInfo();
+  void _resetScoredSetup() {
+    _nextSetupPlayerId = 0;
+    _setupPlayers = [_createSetupPlayer(), _createSetupPlayer()];
+    _roundLimitText = '';
+  }
+
+  SetupPlayerDraft _createSetupPlayer() {
+    final player = SetupPlayerDraft(id: _nextSetupPlayerId);
+    _nextSetupPlayerId += 1;
+    return player;
+  }
+
+  int? _parseRoundLimit() {
+    final trimmedRoundLimit = _roundLimitText.trim();
+    if (trimmedRoundLimit.isEmpty) {
+      return null;
     }
-    final randomIndex = Random().nextInt(allImages.length);
-    final nextImage = allImages.removeAt(randomIndex);
-    _imageName = nextImage.name;
-    _currentImageAssetPath = nextImage.imageUrl;
-    print(allImages);
-    notifyListeners();
+
+    return int.parse(trimmedRoundLimit);
+  }
+
+  void _resetImages() {
+    _isImageShown = true;
+    _remainingImages = _imageMetaInfoRepository.getAllImageMetaInfo();
+  }
+
+  void _nextImage({required bool revealImage, bool notify = true}) {
+    if (_remainingImages.isEmpty) {
+      _remainingImages = _imageMetaInfoRepository.getAllImageMetaInfo();
+    }
+
+    final randomIndex = _random.nextInt(_remainingImages.length);
+    _currentImage = _remainingImages.removeAt(randomIndex);
+
+    if (revealImage) {
+      _isImageShown = true;
+    }
+
+    if (notify) {
+      notifyListeners();
+    }
   }
 }
