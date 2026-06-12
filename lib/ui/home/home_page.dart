@@ -95,7 +95,6 @@ class HomePage extends StatelessWidget {
       HomeScreenState.scoreResults => ResultScreen(
         viewModel: viewModel.resultViewModel,
         onRestartGame: viewModel.restartScoredGame,
-        onShowModeSelection: viewModel.showModeSelection,
       ),
     };
   }

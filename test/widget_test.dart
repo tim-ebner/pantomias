@@ -130,15 +130,47 @@ void main() {
     expect(find.text('Ergebnis'), findsOneWidget);
     expect(find.text('Alice'), findsOneWidget);
     expect(find.text('Bob'), findsOneWidget);
-    expect(find.text('1 Punkt'), findsOneWidget);
-    expect(find.text('0 Punkte'), findsOneWidget);
+    expect(find.text('1 Pkt'), findsOneWidget);
+    expect(find.text('0 Pkt'), findsOneWidget);
     expect(
       find.byKey(const ValueKey('new-scored-game-button')),
       findsOneWidget,
     );
     expect(
       find.byKey(const ValueKey('back-to-mode-selection-button')),
-      findsOneWidget,
+      findsNothing,
+    );
+    expect(find.byKey(const ValueKey('mode-selection-button')), findsOneWidget);
+    expect(
+      tester
+          .getTopLeft(find.byKey(const ValueKey('new-scored-game-button')))
+          .dy,
+      greaterThan(tester.getBottomLeft(find.text('Bob')).dy),
+    );
+  });
+
+  testWidgets('scored results fit four ranked players in the viewport', (
+    tester,
+  ) async {
+    await _startScoredGameWithPlayers(
+      tester,
+      playerNames: ['Alice', 'Bob', 'Cara', 'Dana'],
+      rounds: '1',
+    );
+
+    await tester.tap(find.byKey(const ValueKey('guessed-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('guessed-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('guessed-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('not-guessed-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Dana'), findsOneWidget);
+    expect(
+      tester.getBottomLeft(find.text('Dana')).dy,
+      lessThanOrEqualTo(tester.getSize(find.byType(Scaffold)).height),
     );
   });
 
@@ -219,8 +251,40 @@ Future<void> _openScoredSetup(WidgetTester tester) async {
 }
 
 Future<void> _startScoredGame(WidgetTester tester, {String? rounds}) async {
+  await _startScoredGameWithPlayers(
+    tester,
+    playerNames: ['Alice', 'Bob'],
+    rounds: rounds,
+  );
+}
+
+Future<void> _startScoredGameWithPlayers(
+  WidgetTester tester, {
+  required List<String> playerNames,
+  String? rounds,
+}) async {
   await _openScoredSetup(tester);
-  await _enterScoredSetup(tester, rounds: rounds);
+
+  for (var playerIndex = 2; playerIndex < playerNames.length; playerIndex++) {
+    await tester.tap(find.byKey(const ValueKey('add-player-button')));
+    await tester.pumpAndSettle();
+  }
+
+  for (final entry in playerNames.asMap().entries) {
+    await tester.enterText(
+      find.byKey(ValueKey('player-name-field-${entry.key}')),
+      entry.value,
+    );
+    await tester.pump();
+  }
+
+  if (rounds != null) {
+    await tester.enterText(
+      find.byKey(const ValueKey('round-limit-field')),
+      rounds,
+    );
+    await tester.pump();
+  }
 
   await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
   await tester.pumpAndSettle();

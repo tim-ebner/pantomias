@@ -7,55 +7,107 @@ class ResultScreen extends StatelessWidget {
     super.key,
     required this.viewModel,
     required this.onRestartGame,
-    required this.onShowModeSelection,
   });
 
   final ResultViewModel viewModel;
   final VoidCallback onRestartGame;
-  final VoidCallback onShowModeSelection;
+
+  static const _backgroundColor = Color(0xFFF3FBF8);
+  static const _brandColor = Color(0xFF007260);
+  static const _accentColor = Color(0xFF2ED8B0);
+  static const _winnerScoreColor = Color(0xFF00745D);
+  static const _mutedTextColor = Color(0xFF6B7A74);
+  static const _rankTextColor = Color(0xFFB5CAC2);
+  static const _softBorderColor = Color(0xFF8CECDF);
+  static const _quietBorderColor = Color(0xFFDDE6E2);
+  static const _winnerBadgeColor = Color(0xFFFFCA24);
+  static const _winnerBadgeTextColor = Color(0xFF685710);
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, child) {
-        return Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Ergebnis',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 24.0),
-                  for (final entry in viewModel.rankedPlayers.asMap().entries)
-                    ListTile(
-                      leading: Text('${entry.key + 1}.'),
-                      title: Text(entry.value.name),
-                      trailing: Text(_scoreLabel(entry.value.score)),
+        final rankedPlayers = viewModel.rankedPlayers;
+
+        return ColoredBox(
+          color: _backgroundColor,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final minContentHeight = constraints.maxHeight - 32.0;
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: 560.0,
+                      minHeight: minContentHeight > 0.0
+                          ? minContentHeight
+                          : 0.0,
                     ),
-                  const SizedBox(height: 24.0),
-                  FilledButton.icon(
-                    key: const ValueKey('new-scored-game-button'),
-                    onPressed: onRestartGame,
-                    icon: const Icon(Icons.replay),
-                    label: const Text('Neues Punktespiel'),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            'Ergebnis',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: _brandColor,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.w900,
+                              height: 1.05,
+                              letterSpacing: 0.0,
+                            ),
+                          ),
+                          const SizedBox(height: 6.0),
+                          const Text(
+                            'Super gespielt! Alle sind Gewinner!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: _mutedTextColor,
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                              letterSpacing: 0.0,
+                            ),
+                          ),
+                          const SizedBox(height: 18.0),
+                          if (rankedPlayers.isNotEmpty) ...[
+                            _WinnerCard(
+                              player: rankedPlayers.first,
+                              scoreLabel: _scoreLabel(
+                                rankedPlayers.first.score,
+                              ),
+                            ),
+                            const SizedBox(height: 10.0),
+                            for (final entry
+                                in rankedPlayers
+                                    .skip(1)
+                                    .toList()
+                                    .asMap()
+                                    .entries)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: _RankedPlayerCard(
+                                  player: entry.value,
+                                  rank: entry.key + 2,
+                                  scoreLabel: _scoreLabel(entry.value.score),
+                                ),
+                              ),
+                          ],
+                          const SizedBox(height: 20.0),
+                          const Spacer(),
+                          _RestartGameButton(onPressed: onRestartGame),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 12.0),
-                  OutlinedButton.icon(
-                    key: const ValueKey('back-to-mode-selection-button'),
-                    onPressed: onShowModeSelection,
-                    icon: const Icon(Icons.home),
-                    label: const Text('Modusauswahl'),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         );
       },
@@ -63,6 +115,249 @@ class ResultScreen extends StatelessWidget {
   }
 
   String _scoreLabel(int score) {
-    return score == 1 ? '1 Punkt' : '$score Punkte';
+    return '$score Pkt';
+  }
+}
+
+class _RestartGameButton extends StatelessWidget {
+  const _RestartGameButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFF005246),
+            offset: Offset(0.0, 8.0),
+            blurRadius: 0.0,
+          ),
+        ],
+      ),
+      child: FilledButton.icon(
+        key: const ValueKey('new-scored-game-button'),
+        onPressed: onPressed,
+        icon: const Icon(Icons.replay),
+        label: const Text('Neues Punktespiel'),
+        style: FilledButton.styleFrom(
+          backgroundColor: ResultScreen._accentColor,
+          foregroundColor: ResultScreen._brandColor,
+          minimumSize: const Size.fromHeight(72.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.w700,
+            height: 1.0,
+            letterSpacing: 0.0,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WinnerCard extends StatelessWidget {
+  const _WinnerCard({required this.player, required this.scoreLabel});
+
+  final ResultPlayerScore player;
+  final String scoreLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 12.0),
+          padding: const EdgeInsets.fromLTRB(20.0, 28.0, 20.0, 16.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: ResultScreen._accentColor, width: 2.0),
+            borderRadius: BorderRadius.circular(28.0),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      player.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 26.0,
+                        fontWeight: FontWeight.w900,
+                        height: 1.0,
+                        letterSpacing: 0.0,
+                      ),
+                    ),
+                    const SizedBox(height: 6.0),
+                    const Text(
+                      'Souveräner Auftritt!',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: ResultScreen._mutedTextColor,
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w600,
+                        height: 1.25,
+                        letterSpacing: 0.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 16.0),
+              _WinnerScorePill(label: scoreLabel),
+            ],
+          ),
+        ),
+        const Positioned(top: 0.0, child: _WinnerBadge()),
+      ],
+    );
+  }
+}
+
+class _WinnerBadge extends StatelessWidget {
+  const _WinnerBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+      decoration: BoxDecoration(
+        color: ResultScreen._winnerBadgeColor,
+        borderRadius: BorderRadius.circular(24.0),
+      ),
+      child: const Text(
+        '1. PLATZ',
+        style: TextStyle(
+          color: ResultScreen._winnerBadgeTextColor,
+          fontSize: 16.0,
+          fontWeight: FontWeight.w800,
+          height: 1.0,
+          letterSpacing: 0.0,
+        ),
+      ),
+    );
+  }
+}
+
+class _WinnerScorePill extends StatelessWidget {
+  const _WinnerScorePill({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 66.0,
+      height: 66.0,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: ResultScreen._winnerScoreColor,
+        borderRadius: BorderRadius.circular(22.0),
+      ),
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16.0,
+          fontWeight: FontWeight.w800,
+          height: 1.0,
+          letterSpacing: 0.0,
+        ),
+      ),
+    );
+  }
+}
+
+class _RankedPlayerCard extends StatelessWidget {
+  const _RankedPlayerCard({
+    required this.player,
+    required this.rank,
+    required this.scoreLabel,
+  });
+
+  final ResultPlayerScore player;
+  final int rank;
+  final String scoreLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = rank == 2
+        ? ResultScreen._softBorderColor
+        : ResultScreen._quietBorderColor;
+    final scoreColor = rank == 2
+        ? ResultScreen._brandColor
+        : ResultScreen._mutedTextColor;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: borderColor, width: 2.0),
+        borderRadius: BorderRadius.circular(24.0),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  player.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w800,
+                    height: 1.0,
+                    letterSpacing: 0.0,
+                  ),
+                ),
+                const SizedBox(height: 5.0),
+                Text(
+                  '$rank. PLATZ',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: ResultScreen._rankTextColor,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w700,
+                    height: 1.0,
+                    letterSpacing: 0.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16.0),
+          Text(
+            scoreLabel,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: scoreColor,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w700,
+              height: 1.0,
+              letterSpacing: 0.0,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
