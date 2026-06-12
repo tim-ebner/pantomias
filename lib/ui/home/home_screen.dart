@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/ui/home/widgets/next_button.dart';
 import 'package:pantomias/ui/shared/commons.dart';
 
@@ -16,6 +17,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final contentWidth = math.min(
@@ -54,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                       key: const ValueKey('quick-start-button'),
                       shadowColor: tileShadowColor,
                       icon: Icons.play_circle_outline,
-                      label: 'Schnellstart',
+                      label: l10n.quickStartLabel,
                       onPressed: onStartQuickStart,
                     ),
                     const SizedBox(height: buttonGap),
@@ -63,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                       backgroundColor: Colors.white,
                       shadowColor: buttonShadowColor,
                       icon: Icons.workspace_premium_outlined,
-                      label: 'Spiel mit Punkten',
+                      label: l10n.scoredGameModeLabel,
                       labelMaxLines: 2,
                       onPressed: onStartScoredSetup,
                     ),
@@ -185,7 +188,7 @@ class _StartTileState extends State<_StartTile>
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      "Los geht's!",
+                      context.l10n.startTileTitle,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: brandColor,

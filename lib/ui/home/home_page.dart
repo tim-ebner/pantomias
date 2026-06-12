@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pantomias/l10n/l10n.dart';
 
 import '../game/game_screen.dart';
 import '../point_mode_settings/point_mode_settings_screen.dart';
@@ -70,12 +71,12 @@ class _HomePageState extends State<HomePage> {
               color: _brandColor,
               size: 32.0,
             ),
-            title: _buildAppBarTitle(),
+            title: _buildAppBarTitle(context),
             actions: [
               if (viewModel.screenState != HomeScreenState.start)
                 IconButton(
                   key: const ValueKey('mode-selection-button'),
-                  tooltip: 'Modusauswahl',
+                  tooltip: context.l10n.modeSelectionTooltip,
                   onPressed: viewModel.showModeSelection,
                   icon: const Icon(Icons.home),
                 ),
@@ -112,7 +113,7 @@ class _HomePageState extends State<HomePage> {
     };
   }
 
-  Widget _buildAppBarTitle() {
+  Widget _buildAppBarTitle(BuildContext context) {
     if (viewModel.screenState == HomeScreenState.scoreGame) {
       return ListenableBuilder(
         listenable: viewModel.gameViewModel,
@@ -122,9 +123,14 @@ class _HomePageState extends State<HomePage> {
             return const SizedBox.shrink();
           }
 
-          final roundLabel = viewModel.gameViewModel.roundLimit == null
-              ? 'Runde ${viewModel.gameViewModel.currentRound}'
-              : 'Runde ${viewModel.gameViewModel.currentRound} von ${viewModel.gameViewModel.roundLimit}';
+          final l10n = context.l10n;
+          final roundLimit = viewModel.gameViewModel.roundLimit;
+          final roundLabel = roundLimit == null
+              ? l10n.roundLabel(viewModel.gameViewModel.currentRound)
+              : l10n.roundLabelWithLimit(
+                  viewModel.gameViewModel.currentRound,
+                  roundLimit,
+                );
 
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -145,7 +151,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 8.0),
               Text(
-                'Am Zug: ${activePlayer.name}',
+                l10n.activePlayerLabel(activePlayer.name),
                 key: const ValueKey('active-player-label'),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -163,8 +169,8 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    return const Text(
-      'Pantomias',
+    return Text(
+      context.l10n.appTitle,
       style: TextStyle(
         color: _brandColor,
         fontSize: 40.0,

@@ -21,15 +21,7 @@ class ImageDeckViewModel extends ChangeNotifier {
 
   List<ImageMetaInfo> _remainingImages = [];
   ImageMetaInfo? _currentImage;
-
-  String get imageName {
-    final currentImage = _currentImage;
-    if (currentImage == null) {
-      return '';
-    }
-
-    return _isImageShown ? currentImage.name : 'Versteckt';
-  }
+  ImageMetaInfo? get currentImage => _currentImage;
 
   String get imageAssetPath {
     final currentImage = _currentImage;

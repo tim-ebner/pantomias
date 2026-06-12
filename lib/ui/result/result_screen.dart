@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/ui/home/widgets/next_button.dart';
 import 'package:pantomias/ui/shared/commons.dart';
 
@@ -30,6 +31,7 @@ class ResultScreen extends StatelessWidget {
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, child) {
+        final l10n = context.l10n;
         final rankedPlayers = viewModel.rankedPlayers;
 
         return ColoredBox(
@@ -53,10 +55,10 @@ class ResultScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Text(
-                            'Ergebnis',
+                          Text(
+                            l10n.resultsTitle,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: brandColor,
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
@@ -65,10 +67,10 @@ class ResultScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 6.0),
-                          const Text(
-                            'Super gespielt! Alle sind Gewinner! 😉',
+                          Text(
+                            l10n.resultsSubtitle,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: _mutedTextColor,
                               fontSize: 17.0,
                               fontWeight: FontWeight.w600,
@@ -80,7 +82,7 @@ class ResultScreen extends StatelessWidget {
                           if (rankedPlayers.isNotEmpty) ...[
                             _WinnerCard(
                               player: rankedPlayers.first,
-                              scoreLabel: _scoreLabel(
+                              scoreLabel: l10n.scoreLabel(
                                 rankedPlayers.first.score,
                               ),
                             ),
@@ -96,7 +98,9 @@ class ResultScreen extends StatelessWidget {
                                 child: _RankedPlayerCard(
                                   player: entry.value,
                                   rank: entry.key + 2,
-                                  scoreLabel: _scoreLabel(entry.value.score),
+                                  scoreLabel: l10n.scoreLabel(
+                                    entry.value.score,
+                                  ),
                                 ),
                               ),
                           ],
@@ -105,7 +109,7 @@ class ResultScreen extends StatelessWidget {
                           NextButton(
                             key: const ValueKey('new-scored-game-button'),
                             icon: Icons.replay,
-                            label: 'Neues Punktespiel',
+                            label: l10n.newScoredGameLabel,
                             labelMaxLines: 2,
                             onPressed: onRestartGame,
                           ),
@@ -121,10 +125,6 @@ class ResultScreen extends StatelessWidget {
       },
     );
   }
-
-  String _scoreLabel(int score) {
-    return '$score Pkt';
-  }
 }
 
 class _WinnerCard extends StatefulWidget {
@@ -138,37 +138,32 @@ class _WinnerCard extends StatefulWidget {
 }
 
 class _WinnerCardState extends State<_WinnerCard> {
-  static const _praiseMessages = [
-    'Souveräner Auftritt!',
-    'Super Spiel!',
-    'Beschde!',
-    'Geil Geil Geil!',
-    'Abgeliefert!',
-    'Päääm!',
-  ];
-
-  late String _praiseMessage;
+  static const _praiseMessageCount = 6;
+  late int _praiseMessageIndex;
 
   @override
   void initState() {
     super.initState();
-    _praiseMessage = _randomPraiseMessage();
+    _praiseMessageIndex = _randomPraiseMessageIndex();
   }
 
   @override
   void didUpdateWidget(_WinnerCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.player != widget.player) {
-      _praiseMessage = _randomPraiseMessage();
+      _praiseMessageIndex = _randomPraiseMessageIndex();
     }
   }
 
-  String _randomPraiseMessage() {
-    return _praiseMessages[Random().nextInt(_praiseMessages.length)];
+  int _randomPraiseMessageIndex() {
+    return Random().nextInt(_praiseMessageCount);
   }
 
   @override
   Widget build(BuildContext context) {
+    final praiseMessage =
+        context.l10n.winnerPraiseMessages[_praiseMessageIndex];
+
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.topCenter,
@@ -201,7 +196,7 @@ class _WinnerCardState extends State<_WinnerCard> {
                     ),
                     const SizedBox(height: 6.0),
                     Text(
-                      _praiseMessage,
+                      praiseMessage,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -237,8 +232,8 @@ class _WinnerBadge extends StatelessWidget {
         color: ResultScreen._winnerBadgeColor,
         borderRadius: BorderRadius.circular(24.0),
       ),
-      child: const Text(
-        '1. PLATZ',
+      child: Text(
+        context.l10n.winnerBadgeLabel,
         style: TextStyle(
           color: ResultScreen._winnerBadgeTextColor,
           fontSize: 16.0,
@@ -327,7 +322,7 @@ class _RankedPlayerCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5.0),
                 Text(
-                  '$rank. PLATZ',
+                  context.l10n.rankLabel(rank),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/ui/home/widgets/next_button.dart';
 import 'package:pantomias/ui/shared/commons.dart';
 
@@ -19,6 +20,8 @@ class PointModeSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, child) {
@@ -26,7 +29,7 @@ class PointModeSettingsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Spiel mit Punkten',
+              l10n.scoredGameModeLabel,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 24.0),
@@ -56,7 +59,7 @@ class PointModeSettingsScreen extends StatelessWidget {
                 ),
                 onPressed: viewModel.addSetupPlayer,
                 icon: const Icon(Icons.person_add_alt_1_outlined, size: 28.0),
-                label: const Text('Spieler hinzufügen'),
+                label: Text(l10n.addPlayerLabel),
               ),
             ),
             const SizedBox(height: 16.0),
@@ -65,10 +68,10 @@ class PointModeSettingsScreen extends StatelessWidget {
                 final roundLimitField = _SteppedSetupField(
                   key: const ValueKey('round-limit-field'),
                   initialValue: viewModel.roundLimitText,
-                  labelText: 'Runden (optional)',
+                  labelText: l10n.roundsOptionalLabel,
                   errorText: viewModel.isRoundLimitValid
                       ? null
-                      : 'Bitte positive Rundenzahl eingeben',
+                      : l10n.positiveRoundsError,
                   onChanged: viewModel.updateRoundLimit,
                   onDecrement: viewModel.decrementRoundLimit,
                   onIncrement: viewModel.incrementRoundLimit,
@@ -83,10 +86,10 @@ class PointModeSettingsScreen extends StatelessWidget {
                 final turnTimeLimitField = _SteppedSetupField(
                   key: const ValueKey('turn-time-limit-field'),
                   initialValue: viewModel.turnTimeLimitText,
-                  labelText: 'Zeit (Min:Sek, optional)',
+                  labelText: l10n.timeOptionalLabel,
                   errorText: viewModel.isTurnTimeLimitValid
                       ? null
-                      : 'Bitte positive Zeit eingeben',
+                      : l10n.positiveTimeError,
                   onChanged: viewModel.updateTurnTimeLimit,
                   onDecrement: viewModel.decrementTurnTimeLimit,
                   onIncrement: viewModel.incrementTurnTimeLimit,
@@ -147,11 +150,11 @@ class PointModeSettingsScreen extends StatelessWidget {
                     NextButton(
                       key: const ValueKey('start-scored-game-button'),
                       icon: Icons.play_arrow_rounded,
-                      label: 'Spiel starten',
+                      label: l10n.startGameLabel,
                       labelMaxLines: 2,
                       onPressed: viewModel.canStartScoredGame
                           ? onStartGame
-                          : () {},
+                          : null,
                     ),
                   ],
                 ),
@@ -251,14 +254,14 @@ class _SteppedSetupFieldState extends State<_SteppedSetupField> {
           children: [
             _StepControlButton(
               buttonKey: widget.incrementButtonKey,
-              tooltip: 'Erhöhen',
+              tooltip: context.l10n.increaseTooltip,
               icon: Icons.add,
               onPressed: widget.onIncrement,
             ),
             const SizedBox(height: 10.0),
             _StepControlButton(
               buttonKey: widget.decrementButtonKey,
-              tooltip: 'Verringern',
+              tooltip: context.l10n.decreaseTooltip,
               icon: Icons.remove,
               onPressed: widget.onDecrement,
             ),

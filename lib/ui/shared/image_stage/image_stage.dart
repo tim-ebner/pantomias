@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantomias/l10n/l10n.dart';
 
 import 'image_deck_view_model.dart';
 
@@ -12,12 +13,19 @@ class ImageStage extends StatelessWidget {
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, child) {
+        final currentImage = viewModel.currentImage;
+        final imageLabel = currentImage == null
+            ? ''
+            : viewModel.isImageShown
+            ? context.l10n.pantomimePrompt(currentImage.promptId)
+            : context.l10n.imageHiddenLabel;
+
         return Column(
           children: [
             SizedBox(
               width: double.infinity,
               child: Text(
-                viewModel.imageName,
+                imageLabel,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

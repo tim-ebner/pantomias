@@ -1,6 +1,6 @@
 class ImageMetaInfo {
-  final String name;
+  final String promptId;
   final String imageUrl;
 
-  ImageMetaInfo({required this.name, required this.imageUrl});
+  const ImageMetaInfo({required this.promptId, required this.imageUrl});
 }

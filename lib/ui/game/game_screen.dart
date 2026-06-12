@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantomias/l10n/l10n.dart';
 
 import '../shared/image_stage/image_stage.dart';
 import 'game_view_model.dart';
@@ -87,7 +88,7 @@ class _TurnTimer extends StatelessWidget {
             height: 48.0,
             child: Center(
               child: Text(
-                _formatRemainingTime(remainingTime),
+                _formatRemainingTime(context, remainingTime),
                 key: const ValueKey('turn-timer-label'),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -104,9 +105,9 @@ class _TurnTimer extends StatelessWidget {
     );
   }
 
-  String _formatRemainingTime(Duration duration) {
+  String _formatRemainingTime(BuildContext context, Duration duration) {
     if (duration == Duration.zero) {
-      return 'Zeit abgelaufen';
+      return context.l10n.timeExpiredLabel;
     }
 
     final minutes = duration.inMinutes;

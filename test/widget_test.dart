@@ -1,17 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:pantomias/data/model/image_meta_info.dart';
+import 'package:pantomias/data/model/image_meta_info_repository.dart';
 import 'package:pantomias/data/model/scored_game_settings_repository.dart';
 import 'package:pantomias/data/model/turn_timeout_alert.dart';
+import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/main.dart';
+import 'package:pantomias/ui/home/widgets/next_button.dart';
+import 'package:pantomias/ui/shared/image_stage/image_deck_view_model.dart';
+import 'package:pantomias/ui/shared/image_stage/image_stage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('shows mode selection on app start', (tester) async {
+  testWidgets('shows German mode selection on app start', (tester) async {
     await _pumpApp(tester);
 
     expect(find.text('Schnellstart'), findsOneWidget);
     expect(find.text('Spiel mit Punkten'), findsOneWidget);
+  });
+
+  testWidgets('shows English mode selection and scored setup copy', (
+    tester,
+  ) async {
+    await _pumpApp(tester, locale: const Locale('en'));
+
+    expect(find.text('Quick Start'), findsOneWidget);
+    expect(find.text('Points Game'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Points Game'), findsOneWidget);
+    expect(find.text('Add Player'), findsOneWidget);
+    expect(find.text('Rounds (optional)'), findsOneWidget);
+    expect(find.text('Time (Min:Sec, optional)'), findsOneWidget);
+    expect(find.text('Start Game'), findsOneWidget);
+
+    await _enterScoredSetup(tester, time: '0');
+
+    expect(_startScoredGameButton(tester).onPressed, isNull);
+    expect(find.text('Please enter a positive time'), findsOneWidget);
+  });
+
+  testWidgets('image stage localizes prompt and hidden label', (tester) async {
+    await _pumpImageStage(tester, locale: const Locale('de'));
+
+    expect(find.text('Katze'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('image-stage-picture')));
+    await tester.pumpAndSettle();
+    expect(find.text('Versteckt'), findsOneWidget);
+
+    await _pumpImageStage(tester, locale: const Locale('en'));
+
+    expect(find.text('Cat'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('image-stage-picture')));
+    await tester.pumpAndSettle();
+    expect(find.text('Hidden'), findsOneWidget);
   });
 
   testWidgets(
@@ -106,33 +150,33 @@ void main() {
   testWidgets('scored setup steppers adjust rounds and timer', (tester) async {
     await _openScoredSetup(tester);
 
-    await tester.tap(
+    await _tapWhenVisible(
+      tester,
       find.byKey(const ValueKey('round-limit-increment-button')),
     );
-    await tester.pump();
-    await tester.tap(
+    await _tapWhenVisible(
+      tester,
       find.byKey(const ValueKey('round-limit-increment-button')),
     );
-    await tester.pump();
-    await tester.tap(
+    await _tapWhenVisible(
+      tester,
       find.byKey(const ValueKey('round-limit-decrement-button')),
     );
-    await tester.pump();
 
     expect(_textFormFieldText(tester, 'round-limit-field'), '1');
 
-    await tester.tap(
+    await _tapWhenVisible(
+      tester,
       find.byKey(const ValueKey('turn-time-limit-increment-button')),
     );
-    await tester.pump();
-    await tester.tap(
+    await _tapWhenVisible(
+      tester,
       find.byKey(const ValueKey('turn-time-limit-increment-button')),
     );
-    await tester.pump();
-    await tester.tap(
+    await _tapWhenVisible(
+      tester,
       find.byKey(const ValueKey('turn-time-limit-decrement-button')),
     );
-    await tester.pump();
 
     expect(_textFormFieldText(tester, 'turn-time-limit-field'), '0:30');
   });
@@ -270,6 +314,41 @@ void main() {
     );
   });
 
+  testWidgets('English game flow localizes timer and results copy', (
+    tester,
+  ) async {
+    final turnTimeoutAlert = _FakeTurnTimeoutAlert();
+    await _startScoredGame(
+      tester,
+      rounds: '1',
+      time: '1',
+      turnTimeoutAlert: turnTimeoutAlert,
+      locale: const Locale('en'),
+    );
+
+    expect(find.text('Turn: Alice'), findsOneWidget);
+    expect(find.text('Round 1 of 1'), findsOneWidget);
+    expect(find.text('1:00'), findsOneWidget);
+
+    await tester.pump(const Duration(minutes: 1));
+    await tester.pump();
+
+    expect(turnTimeoutAlert.playCount, 1);
+    expect(find.text("Time's up"), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('guessed-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('not-guessed-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Results'), findsOneWidget);
+    expect(find.text('1 pt'), findsOneWidget);
+    expect(find.text('0 pts'), findsOneWidget);
+    expect(find.text('1ST PLACE'), findsOneWidget);
+    expect(find.text('2. place'), findsOneWidget);
+    expect(find.text('New Points Game'), findsOneWidget);
+  });
+
   testWidgets('scored results fit four ranked players in the viewport', (
     tester,
   ) async {
@@ -347,6 +426,7 @@ Future<void> _pumpApp(
   List<String>? savedPlayerNames,
   String savedRoundLimitText = '',
   String savedTurnTimeLimitText = '',
+  Locale locale = const Locale('de'),
 }) async {
   settingsRepository ??= await _createSettingsRepository();
   if (savedPlayerNames != null ||
@@ -363,6 +443,27 @@ Future<void> _pumpApp(
     MyApp(
       scoredGameSettingsRepository: settingsRepository,
       turnTimeoutAlert: turnTimeoutAlert,
+      locale: locale,
+    ),
+  );
+  await tester.pump();
+}
+
+Future<void> _pumpImageStage(
+  WidgetTester tester, {
+  required Locale locale,
+}) async {
+  final viewModel = ImageDeckViewModel(
+    imageMetaInfoRepository: _SingleImageMetaInfoRepository(),
+  )..start();
+  addTearDown(viewModel.dispose);
+
+  await tester.pumpWidget(
+    MaterialApp(
+      locale: locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: ImageStage(viewModel: viewModel)),
     ),
   );
   await tester.pump();
@@ -377,8 +478,9 @@ Future<ScoredGameSettingsRepository> _createSettingsRepository() async {
 Future<void> _openScoredSetup(
   WidgetTester tester, {
   TurnTimeoutAlert? turnTimeoutAlert,
+  Locale locale = const Locale('de'),
 }) async {
-  await _pumpApp(tester, turnTimeoutAlert: turnTimeoutAlert);
+  await _pumpApp(tester, turnTimeoutAlert: turnTimeoutAlert, locale: locale);
   await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
   await tester.pumpAndSettle();
 }
@@ -388,6 +490,7 @@ Future<void> _startScoredGame(
   String? rounds,
   String? time,
   TurnTimeoutAlert? turnTimeoutAlert,
+  Locale locale = const Locale('de'),
 }) async {
   await _startScoredGameWithPlayers(
     tester,
@@ -395,6 +498,7 @@ Future<void> _startScoredGame(
     rounds: rounds,
     time: time,
     turnTimeoutAlert: turnTimeoutAlert,
+    locale: locale,
   );
 }
 
@@ -404,8 +508,13 @@ Future<void> _startScoredGameWithPlayers(
   String? rounds,
   String? time,
   TurnTimeoutAlert? turnTimeoutAlert,
+  Locale locale = const Locale('de'),
 }) async {
-  await _openScoredSetup(tester, turnTimeoutAlert: turnTimeoutAlert);
+  await _openScoredSetup(
+    tester,
+    turnTimeoutAlert: turnTimeoutAlert,
+    locale: locale,
+  );
 
   for (var playerIndex = 2; playerIndex < playerNames.length; playerIndex++) {
     await tester.tap(find.byKey(const ValueKey('add-player-button')));
@@ -436,7 +545,10 @@ Future<void> _startScoredGameWithPlayers(
     await tester.pump();
   }
 
-  await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
+  await _tapWhenVisible(
+    tester,
+    find.byKey(const ValueKey('start-scored-game-button')),
+  );
   await tester.pumpAndSettle();
 }
 
@@ -473,8 +585,15 @@ Future<void> _enterScoredSetup(
   }
 }
 
-FilledButton _startScoredGameButton(WidgetTester tester) {
-  return tester.widget<FilledButton>(
+Future<void> _tapWhenVisible(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+  await tester.pump();
+}
+
+NextButton _startScoredGameButton(WidgetTester tester) {
+  return tester.widget<NextButton>(
     find.byKey(const ValueKey('start-scored-game-button')),
   );
 }
@@ -502,6 +621,18 @@ TextFormField _textFormField(WidgetTester tester, String key) {
 String _textFormFieldText(WidgetTester tester, String key) {
   final field = _textFormField(tester, key);
   return field.controller?.text ?? field.initialValue ?? '';
+}
+
+class _SingleImageMetaInfoRepository extends ImageMetaInfoRepository {
+  @override
+  List<ImageMetaInfo> getAllImageMetaInfo() {
+    return [
+      const ImageMetaInfo(
+        promptId: 'cat',
+        imageUrl: 'assets/images/pants/cat.webp',
+      ),
+    ];
+  }
 }
 
 class _FakeTurnTimeoutAlert implements TurnTimeoutAlert {

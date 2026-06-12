@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantomias/l10n/l10n.dart';
 
 class ScoredTurnActions extends StatelessWidget {
   const ScoredTurnActions({
@@ -12,6 +13,7 @@ class ScoredTurnActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     final wrongColor = Colors.red.shade700;
     final correctColor = colorScheme.primary;
@@ -19,7 +21,7 @@ class ScoredTurnActions extends StatelessWidget {
 
     final notGuessedButton = _ScoreActionButton(
       key: const ValueKey('not-guessed-button'),
-      label: 'Falsch',
+      label: l10n.notGuessedLabel,
       icon: Icons.close,
       foregroundColor: wrongColor,
       backgroundColor: colorScheme.surface,
@@ -28,7 +30,7 @@ class ScoredTurnActions extends StatelessWidget {
     );
     final guessedButton = _ScoreActionButton(
       key: const ValueKey('guessed-button'),
-      label: 'Erraten',
+      label: l10n.guessedLabel,
       icon: Icons.check_circle_outline,
       foregroundColor: colorScheme.onPrimary,
       backgroundColor: correctColor,

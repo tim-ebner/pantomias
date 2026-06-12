@@ -1,0 +1,206 @@
+{
+  "@@locale": "en",
+  "appTitle": "Pantomias",
+  "startTileTitle": "Let's go!",
+  "quickStartLabel": "Quick Start",
+  "scoredGameModeLabel": "Points Game",
+  "nextImageLabel": "Next Image",
+  "modeSelectionTooltip": "Mode Selection",
+  "roundLabel": "Round {round}",
+  "@roundLabel": {
+    "placeholders": {
+      "round": {
+        "type": "int"
+      }
+    }
+  },
+  "roundLabelWithLimit": "Round {round} of {limit}",
+  "@roundLabelWithLimit": {
+    "placeholders": {
+      "round": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "activePlayerLabel": "Turn: {name}",
+  "@activePlayerLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notGuessedLabel": "Wrong",
+  "guessedLabel": "Guessed",
+  "timeExpiredLabel": "Time's up",
+  "imageHiddenLabel": "Hidden",
+  "addPlayerLabel": "Add Player",
+  "playerLabel": "Player {number}",
+  "@playerLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "removePlayerTooltip": "Remove player",
+  "roundsOptionalLabel": "Rounds (optional)",
+  "positiveRoundsError": "Please enter a positive number of rounds",
+  "timeOptionalLabel": "Time (Min:Sec, optional)",
+  "positiveTimeError": "Please enter a positive time",
+  "increaseTooltip": "Increase",
+  "decreaseTooltip": "Decrease",
+  "startGameLabel": "Start Game",
+  "resultsTitle": "Results",
+  "resultsSubtitle": "Great game! Everyone's a winner! 😉",
+  "newScoredGameLabel": "New Points Game",
+  "scoreLabel": "{score, plural, one{{score} pt} other{{score} pts}}",
+  "@scoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "winnerPraise1": "Commanding performance!",
+  "winnerPraise2": "Great game!",
+  "winnerPraise3": "Top notch!",
+  "winnerPraise4": "Crushed it!",
+  "winnerPraise5": "Delivered!",
+  "winnerPraise6": "Boom!",
+  "winnerBadgeLabel": "1ST PLACE",
+  "rankLabel": "{rank}. place",
+  "@rankLabel": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "promptCat": "Cat",
+  "promptDog": "Dog",
+  "promptWizard": "Wizard",
+  "promptAnt": "Ant",
+  "promptBackpack": "Backpack",
+  "promptBaker": "Baker",
+  "promptBee": "Bee",
+  "promptBicycle": "Bicycle",
+  "promptBunny": "Bunny",
+  "promptBurger": "Burger",
+  "promptClimbing": "Climbing",
+  "promptDancing": "Dancing",
+  "promptDragon": "Dragon",
+  "promptEgg": "Egg",
+  "promptFarmer": "Farmer",
+  "promptFish": "Fish",
+  "promptFondue": "Fondue",
+  "promptFork": "Fork",
+  "promptHero": "Hero",
+  "promptKnight": "Knight",
+  "promptLama": "Llama",
+  "promptNinja": "Ninja",
+  "promptPenguin": "Penguin",
+  "promptPirate": "Pirate",
+  "promptReindeer": "Reindeer",
+  "promptShip": "Ship",
+  "promptSkiing": "Skiing",
+  "promptSnake": "Snake",
+  "promptSpaghetti": "Spaghetti",
+  "promptSquirrel": "Squirrel",
+  "promptStorm": "Storm",
+  "promptTree": "Tree",
+  "promptUmbrella": "Umbrella",
+  "promptUnicorn": "Unicorn",
+  "promptVolleyball": "Volleyball",
+  "promptMonkey": "Monkey",
+  "promptOpenBook": "Open Book",
+  "promptSoccerBall": "Soccer Ball",
+  "promptAlarmClock": "Alarm Clock",
+  "promptBalloon": "Balloon",
+  "promptBeanie": "Beanie",
+  "promptBear": "Bear",
+  "promptBee2": "Bee",
+  "promptBird": "Bird",
+  "promptBlanket": "Blanket",
+  "promptBroom": "Broom",
+  "promptBucket": "Bucket",
+  "promptButterfly": "Butterfly",
+  "promptCamel": "Camel",
+  "promptCamera": "Camera",
+  "promptChair": "Chair",
+  "promptChicken": "Chicken",
+  "promptCow": "Cow",
+  "promptCrab": "Crab",
+  "promptCrocodile": "Crocodile",
+  "promptCup": "Cup",
+  "promptDeer": "Deer",
+  "promptDolphin": "Dolphin",
+  "promptDrums": "Drums",
+  "promptDuck": "Duck",
+  "promptEagle": "Eagle",
+  "promptElephant": "Elephant",
+  "promptFlashlight": "Flashlight",
+  "promptFloorLamp": "Floor Lamp",
+  "promptFlute": "Flute",
+  "promptFox": "Fox",
+  "promptFrog": "Frog",
+  "promptGift": "Gift",
+  "promptGiraffe": "Giraffe",
+  "promptGlasses": "Glasses",
+  "promptGloves": "Gloves",
+  "promptGoat": "Goat",
+  "promptGuineaPig": "Guinea Pig",
+  "promptGuitar": "Guitar",
+  "promptHamster": "Hamster",
+  "promptHat": "Hat",
+  "promptHedgehog": "Hedgehog",
+  "promptKey": "Key",
+  "promptLadybug": "Ladybug",
+  "promptLeopard": "Leopard",
+  "promptLion": "Lion",
+  "promptMirror": "Mirror",
+  "promptMobile": "Mobile Phone",
+  "promptMouse": "Mouse",
+  "promptOwl": "Owl",
+  "promptPanda": "Panda",
+  "promptParrot": "Parrot",
+  "promptPelican": "Pelicans",
+  "promptPencil": "Pencil",
+  "promptPenguin2": "Penguin",
+  "promptPig": "Pig",
+  "promptPillow": "Pillow",
+  "promptPlate": "Plate",
+  "promptRabbit": "Rabbit",
+  "promptRemoteControl": "Remote Control",
+  "promptRope": "Rope",
+  "promptRuler": "Ruler",
+  "promptScarf": "Scarf",
+  "promptScissors": "Scissors",
+  "promptScooter": "Scooter",
+  "promptShark": "Shark",
+  "promptSheep": "Sheep",
+  "promptSheetOfPaper": "Sheet of Paper",
+  "promptSkateboard": "Skateboard",
+  "promptSledge": "Sled",
+  "promptSlide": "Slide",
+  "promptSnail": "Snail",
+  "promptSoap": "Soap",
+  "promptSpider": "Spider",
+  "promptSpoon": "Spoon",
+  "promptStarfish": "Starfish",
+  "promptSuitcase": "Suitcase",
+  "promptSwing": "Swing",
+  "promptTable": "Table",
+  "promptTelevision": "Television",
+  "promptTiger": "Tiger",
+  "promptToothbrush": "Toothbrush",
+  "promptTowel": "Towel",
+  "promptTurtle": "Turtle",
+  "promptWatch": "Watch",
+  "promptWhale": "Whale",
+  "promptWolf": "Wolf",
+  "promptZebra": "Zebra"
+}

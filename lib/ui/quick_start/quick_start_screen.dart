@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/ui/home/widgets/next_button.dart';
 import 'package:pantomias/ui/shared/image_stage/image_stage.dart';
 
@@ -24,7 +25,7 @@ class QuickStartScreen extends StatelessWidget {
           NextButton(
             key: const ValueKey('quick-next-button'),
             icon: Icons.flag,
-            label: 'Nächstes Bild',
+            label: context.l10n.nextImageLabel,
             labelMaxLines: 2,
             onPressed: viewModel.nextImage,
           ),

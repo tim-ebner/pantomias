@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/ui/shared/commons.dart';
 
 import '../point_mode_settings_view_model.dart';
@@ -33,7 +34,7 @@ class PlayerNameField extends StatelessWidget {
             style: pointModeInputTextStyle(context),
             decoration: buildPointModeInputDecoration(
               context,
-              labelText: 'Spieler $playerNumber',
+              labelText: context.l10n.playerLabel(playerNumber),
             ),
             onChanged: (name) => onChanged(player.id, name),
             textCapitalization: TextCapitalization.words,
@@ -43,7 +44,7 @@ class PlayerNameField extends StatelessWidget {
         const SizedBox(width: 8.0),
         IconButton(
           key: ValueKey('remove-player-button-${player.id}'),
-          tooltip: 'Spieler entfernen',
+          tooltip: context.l10n.removePlayerTooltip,
           onPressed: canRemove ? () => onRemove(player.id) : null,
           color: brandColor,
           iconSize: 28.0,

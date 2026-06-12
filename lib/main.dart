@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pantomias/data/model/image_meta_info_repository.dart';
 import 'package:pantomias/data/model/scored_game_settings_repository.dart';
+import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/data/model/turn_timeout_alert.dart';
 import 'package:pantomias/routing/router.dart';
 import 'package:provider/provider.dart';
@@ -22,10 +24,12 @@ class MyApp extends StatelessWidget {
     super.key,
     required this.scoredGameSettingsRepository,
     this.turnTimeoutAlert,
+    this.locale,
   });
 
   final ScoredGameSettingsRepository scoredGameSettingsRepository;
   final TurnTimeoutAlert? turnTimeoutAlert;
+  final Locale? locale;
 
   // This widget is the root of your application.
   @override
@@ -40,7 +44,15 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
-        title: 'Pantomias',
+        onGenerateTitle: (context) => context.l10n.appTitle,
+        locale: locale,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
           textTheme: const TextTheme(

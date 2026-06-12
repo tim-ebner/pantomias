@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/ui/shared/commons.dart';
 
 class MiddleButton extends StatelessWidget {
@@ -23,7 +24,7 @@ class MiddleButton extends StatelessWidget {
         key: const ValueKey('new-scored-game-button'),
         onPressed: onPressed,
         icon: const Icon(Icons.replay),
-        label: const Text('Neues Punktespiel'),
+        label: Text(context.l10n.newScoredGameLabel),
         style: FilledButton.styleFrom(
           backgroundColor: accentColor,
           foregroundColor: brandColor,
