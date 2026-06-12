@@ -66,7 +66,7 @@ class ResultScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 6.0),
                           const Text(
-                            'Super gespielt! Alle sind Gewinner!',
+                            'Super gespielt! Alle sind Gewinner! 😉',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: _mutedTextColor,

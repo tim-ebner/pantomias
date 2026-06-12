@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pantomias/ui/shared/commons.dart';
 
 import '../point_mode_settings_view_model.dart';
+import 'point_mode_input_style.dart';
 
 class PlayerNameField extends StatelessWidget {
   const PlayerNameField({
@@ -21,14 +23,16 @@ class PlayerNameField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: TextFormField(
             key: ValueKey('player-name-field-${player.id}'),
             initialValue: player.name,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+            cursorColor: brandColor,
+            style: pointModeInputTextStyle(context),
+            decoration: buildPointModeInputDecoration(
+              context,
               labelText: 'Spieler $playerNumber',
             ),
             onChanged: (name) => onChanged(player.id, name),
@@ -41,7 +45,9 @@ class PlayerNameField extends StatelessWidget {
           key: ValueKey('remove-player-button-${player.id}'),
           tooltip: 'Spieler entfernen',
           onPressed: canRemove ? () => onRemove(player.id) : null,
-          icon: const Icon(Icons.delete),
+          color: brandColor,
+          iconSize: 28.0,
+          icon: const Icon(Icons.delete_outline),
         ),
       ],
     );
