@@ -1,4 +1,6 @@
 import 'package:go_router/go_router.dart';
+import 'package:pantomias/data/model/image_meta_info_repository.dart';
+import 'package:pantomias/data/model/scored_game_settings_repository.dart';
 import 'package:pantomias/routing/routes.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +13,11 @@ GoRouter router() => GoRouter(
     GoRoute(
       path: Routes.home,
       builder: (context, state) {
-        final viewModel = HomeViewModel(imageMetaInfoRepository: context.read());
+        final viewModel = HomeViewModel(
+          imageMetaInfoRepository: context.read<ImageMetaInfoRepository>(),
+          scoredGameSettingsRepository: context
+              .read<ScoredGameSettingsRepository>(),
+        );
         return HomePage(viewModel: viewModel);
       },
     ),

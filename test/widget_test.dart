@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:pantomias/data/model/scored_game_settings_repository.dart';
 import 'package:pantomias/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   testWidgets('shows mode selection on app start', (tester) async {
@@ -48,6 +50,40 @@ void main() {
     await tester.pump();
 
     expect(_startScoredGameButton(tester).onPressed, isNotNull);
+  });
+
+  testWidgets('scored setup restores saved players and rounds as editable', (
+    tester,
+  ) async {
+    await _pumpApp(
+      tester,
+      savedPlayerNames: ['Ada', 'Ben'],
+      savedRoundLimitText: '3',
+    );
+
+    await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
+    await tester.pumpAndSettle();
+
+    expect(_textFormField(tester, 'player-name-field-0').initialValue, 'Ada');
+    expect(_textFormField(tester, 'player-name-field-1').initialValue, 'Ben');
+    expect(_textFormField(tester, 'round-limit-field').initialValue, '3');
+
+    await tester.enterText(
+      find.byKey(const ValueKey('player-name-field-0')),
+      'Cara',
+    );
+    await tester.pump();
+    await tester.enterText(
+      find.byKey(const ValueKey('round-limit-field')),
+      '4',
+    );
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Am Zug: Cara'), findsOneWidget);
+    expect(find.text('Runde 1 von 4'), findsOneWidget);
   });
 
   testWidgets(
@@ -105,11 +141,75 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('starting a scored game persists setup for the next app start', (
+    tester,
+  ) async {
+    final settingsRepository = await _createSettingsRepository();
+
+    await _pumpApp(tester, settingsRepository: settingsRepository);
+    await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
+    await tester.pumpAndSettle();
+    await _enterScoredSetup(tester, rounds: '2');
+
+    await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
+    await tester.pumpAndSettle();
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpAndSettle();
+    await _pumpApp(tester, settingsRepository: settingsRepository);
+    await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
+    await tester.pumpAndSettle();
+
+    expect(_textFormField(tester, 'player-name-field-0').initialValue, 'Alice');
+    expect(_textFormField(tester, 'player-name-field-1').initialValue, 'Bob');
+    expect(_textFormField(tester, 'round-limit-field').initialValue, '2');
+  });
+
+  testWidgets('new scored game restarts with same players and rounds', (
+    tester,
+  ) async {
+    await _startScoredGame(tester, rounds: '1');
+
+    await tester.tap(find.byKey(const ValueKey('guessed-button')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('not-guessed-button')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('new-scored-game-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Am Zug: Alice'), findsOneWidget);
+    expect(find.text('Runde 1 von 1'), findsOneWidget);
+    expect(_scoreText(tester, 0), '0');
+    expect(_scoreText(tester, 1), '0');
+  });
 }
 
-Future<void> _pumpApp(WidgetTester tester) async {
-  await tester.pumpWidget(const MyApp());
+Future<void> _pumpApp(
+  WidgetTester tester, {
+  ScoredGameSettingsRepository? settingsRepository,
+  List<String>? savedPlayerNames,
+  String savedRoundLimitText = '',
+}) async {
+  settingsRepository ??= await _createSettingsRepository();
+  if (savedPlayerNames != null || savedRoundLimitText.isNotEmpty) {
+    await settingsRepository.save(
+      playerNames: savedPlayerNames ?? [],
+      roundLimitText: savedRoundLimitText,
+    );
+  }
+
+  await tester.pumpWidget(
+    MyApp(scoredGameSettingsRepository: settingsRepository),
+  );
   await tester.pumpAndSettle();
+}
+
+Future<ScoredGameSettingsRepository> _createSettingsRepository() async {
+  SharedPreferences.setMockInitialValues({});
+  final preferences = await SharedPreferences.getInstance();
+  return ScoredGameSettingsRepository(preferences: preferences);
 }
 
 Future<void> _openScoredSetup(WidgetTester tester) async {
@@ -120,6 +220,13 @@ Future<void> _openScoredSetup(WidgetTester tester) async {
 
 Future<void> _startScoredGame(WidgetTester tester, {String? rounds}) async {
   await _openScoredSetup(tester);
+  await _enterScoredSetup(tester, rounds: rounds);
+
+  await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
+  await tester.pumpAndSettle();
+}
+
+Future<void> _enterScoredSetup(WidgetTester tester, {String? rounds}) async {
   await tester.enterText(
     find.byKey(const ValueKey('player-name-field-0')),
     'Alice',
@@ -138,9 +245,6 @@ Future<void> _startScoredGame(WidgetTester tester, {String? rounds}) async {
     );
     await tester.pump();
   }
-
-  await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
-  await tester.pumpAndSettle();
 }
 
 FilledButton _startScoredGameButton(WidgetTester tester) {
@@ -154,4 +258,8 @@ String _scoreText(WidgetTester tester, int playerIndex) {
     find.byKey(ValueKey('player-score-$playerIndex')),
   );
   return scoreText.data ?? '';
+}
+
+TextFormField _textFormField(WidgetTester tester, String key) {
+  return tester.widget<TextFormField>(find.byKey(ValueKey(key)));
 }

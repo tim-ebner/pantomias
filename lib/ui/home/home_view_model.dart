@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:pantomias/data/model/image_meta_info.dart';
 import 'package:pantomias/data/model/image_meta_info_repository.dart';
+import 'package:pantomias/data/model/scored_game_settings_repository.dart';
 
 enum HomeScreenState { start, quickStart, scoreSetup, scoreGame, scoreResults }
 
@@ -21,14 +23,18 @@ class PlayerScore {
 }
 
 class HomeViewModel extends ChangeNotifier {
-  HomeViewModel({required ImageMetaInfoRepository imageMetaInfoRepository})
-    : _imageMetaInfoRepository = imageMetaInfoRepository {
+  HomeViewModel({
+    required ImageMetaInfoRepository imageMetaInfoRepository,
+    required ScoredGameSettingsRepository scoredGameSettingsRepository,
+  }) : _imageMetaInfoRepository = imageMetaInfoRepository,
+       _scoredGameSettingsRepository = scoredGameSettingsRepository {
     _resetScoredSetup();
   }
 
   static const hiddenImageAssetPath = 'assets/images/hidden.webp';
 
   final ImageMetaInfoRepository _imageMetaInfoRepository;
+  final ScoredGameSettingsRepository _scoredGameSettingsRepository;
   final Random _random = Random();
 
   HomeScreenState _screenState = HomeScreenState.start;
@@ -176,15 +182,28 @@ class HomeViewModel extends ChangeNotifier {
       return;
     }
 
-    _players = _validSetupPlayerNames
-        .map((playerName) => PlayerScore(name: playerName))
-        .toList();
-    _activePlayerIndex = 0;
-    _completedTurns = 0;
-    _roundLimit = _parseRoundLimit();
-    _screenState = HomeScreenState.scoreGame;
-    _resetImages();
-    _nextImage(revealImage: true, notify: false);
+    final playerNames = _validSetupPlayerNames;
+    final roundLimitText = _roundLimitText.trim();
+    _startScoredGame(playerNames: playerNames, roundLimit: _parseRoundLimit());
+    unawaited(
+      _scoredGameSettingsRepository.save(
+        playerNames: playerNames,
+        roundLimitText: roundLimitText,
+      ),
+    );
+    notifyListeners();
+  }
+
+  void restartScoredGame() {
+    if (_players.length < 2) {
+      startScoredSetup();
+      return;
+    }
+
+    _startScoredGame(
+      playerNames: _players.map((player) => player.name).toList(),
+      roundLimit: _roundLimit,
+    );
     notifyListeners();
   }
 
@@ -230,12 +249,37 @@ class HomeViewModel extends ChangeNotifier {
 
   void _resetScoredSetup() {
     _nextSetupPlayerId = 0;
-    _setupPlayers = [_createSetupPlayer(), _createSetupPlayer()];
-    _roundLimitText = '';
+    final savedPlayerNames = _scoredGameSettingsRepository
+        .loadPlayerNames()
+        .map((playerName) => playerName.trim())
+        .where((playerName) => playerName.isNotEmpty)
+        .toList();
+
+    _setupPlayers = savedPlayerNames.length >= 2
+        ? savedPlayerNames
+              .map((playerName) => _createSetupPlayer(name: playerName))
+              .toList()
+        : [_createSetupPlayer(), _createSetupPlayer()];
+    _roundLimitText = _scoredGameSettingsRepository.loadRoundLimitText();
   }
 
-  SetupPlayerDraft _createSetupPlayer() {
-    final player = SetupPlayerDraft(id: _nextSetupPlayerId);
+  void _startScoredGame({
+    required List<String> playerNames,
+    required int? roundLimit,
+  }) {
+    _players = playerNames
+        .map((playerName) => PlayerScore(name: playerName))
+        .toList();
+    _activePlayerIndex = 0;
+    _completedTurns = 0;
+    _roundLimit = roundLimit;
+    _screenState = HomeScreenState.scoreGame;
+    _resetImages();
+    _nextImage(revealImage: true, notify: false);
+  }
+
+  SetupPlayerDraft _createSetupPlayer({String name = ''}) {
+    final player = SetupPlayerDraft(id: _nextSetupPlayerId, name: name);
     _nextSetupPlayerId += 1;
     return player;
   }
