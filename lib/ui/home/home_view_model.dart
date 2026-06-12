@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:pantomias/data/model/image_meta_info_repository.dart';
 import 'package:pantomias/data/model/scored_game_settings_repository.dart';
+import 'package:pantomias/data/model/turn_timeout_alert.dart';
 
 import '../game/game_view_model.dart';
 import '../point_mode_settings/point_mode_settings_view_model.dart';
@@ -13,6 +14,7 @@ class HomeViewModel extends ChangeNotifier {
   HomeViewModel({
     required ImageMetaInfoRepository imageMetaInfoRepository,
     required ScoredGameSettingsRepository scoredGameSettingsRepository,
+    required TurnTimeoutAlert turnTimeoutAlert,
   }) : quickStartViewModel = QuickStartViewModel(
          imageMetaInfoRepository: imageMetaInfoRepository,
        ),
@@ -21,6 +23,7 @@ class HomeViewModel extends ChangeNotifier {
        ),
        gameViewModel = GameViewModel(
          imageMetaInfoRepository: imageMetaInfoRepository,
+         turnTimeoutAlert: turnTimeoutAlert,
        ),
        resultViewModel = ResultViewModel();
 
@@ -33,17 +36,20 @@ class HomeViewModel extends ChangeNotifier {
   HomeScreenState get screenState => _screenState;
 
   void showModeSelection() {
+    gameViewModel.stop();
     _screenState = HomeScreenState.start;
     notifyListeners();
   }
 
   void startQuickStart() {
+    gameViewModel.stop();
     quickStartViewModel.start();
     _screenState = HomeScreenState.quickStart;
     notifyListeners();
   }
 
   void startScoredSetup() {
+    gameViewModel.stop();
     pointModeSettingsViewModel.resetFromSavedSettings();
     _screenState = HomeScreenState.scoreSetup;
     notifyListeners();
@@ -58,6 +64,7 @@ class HomeViewModel extends ChangeNotifier {
     gameViewModel.start(
       playerNames: settings.playerNames,
       roundLimit: settings.roundLimit,
+      turnTimeLimit: settings.turnTimeLimit,
     );
     pointModeSettingsViewModel.saveCurrentSettings();
     _screenState = HomeScreenState.scoreGame;

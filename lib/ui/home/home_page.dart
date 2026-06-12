@@ -8,14 +8,35 @@ import '../result/result_screen.dart';
 import 'home_screen.dart';
 import 'home_view_model.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.viewModel});
 
   final HomeViewModel viewModel;
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  HomeViewModel get viewModel => widget.viewModel;
+
   static const _titleBarBackgroundColor = Color(0xFFF3FBF8);
   static const _titleBarDividerColor = Color(0xFFE3ECE8);
   static const _brandColor = Color(0xFF006D5B);
+
+  @override
+  void didUpdateWidget(covariant HomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.viewModel != widget.viewModel) {
+      oldWidget.viewModel.dispose();
+    }
+  }
+
+  @override
+  void dispose() {
+    viewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

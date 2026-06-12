@@ -14,10 +14,12 @@ class PointModeSettings {
   const PointModeSettings({
     required this.playerNames,
     required this.roundLimit,
+    required this.turnTimeLimit,
   });
 
   final List<String> playerNames;
   final int? roundLimit;
+  final Duration? turnTimeLimit;
 }
 
 class PointModeSettingsViewModel extends ChangeNotifier {
@@ -36,20 +38,23 @@ class PointModeSettingsViewModel extends ChangeNotifier {
   String _roundLimitText = '';
   String get roundLimitText => _roundLimitText;
 
+  String _turnTimeLimitText = '';
+  String get turnTimeLimitText => _turnTimeLimitText;
+
   bool get canRemoveSetupPlayer => _setupPlayers.length > 2;
 
   bool get isRoundLimitValid {
-    final trimmedRoundLimit = _roundLimitText.trim();
-    if (trimmedRoundLimit.isEmpty) {
-      return true;
-    }
+    return _isPositiveOptionalInt(_roundLimitText);
+  }
 
-    final parsedRoundLimit = int.tryParse(trimmedRoundLimit);
-    return parsedRoundLimit != null && parsedRoundLimit > 0;
+  bool get isTurnTimeLimitValid {
+    return _isPositiveOptionalInt(_turnTimeLimitText);
   }
 
   bool get canStartScoredGame =>
-      _validSetupPlayerNames.length >= 2 && isRoundLimitValid;
+      _validSetupPlayerNames.length >= 2 &&
+      isRoundLimitValid &&
+      isTurnTimeLimitValid;
 
   void resetFromSavedSettings() {
     _loadSavedSettings();
@@ -87,6 +92,11 @@ class PointModeSettingsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateTurnTimeLimit(String turnTimeLimit) {
+    _turnTimeLimitText = turnTimeLimit;
+    notifyListeners();
+  }
+
   PointModeSettings? createGameSettings() {
     if (!canStartScoredGame) {
       return null;
@@ -95,6 +105,7 @@ class PointModeSettingsViewModel extends ChangeNotifier {
     return PointModeSettings(
       playerNames: List.unmodifiable(_validSetupPlayerNames),
       roundLimit: _parseRoundLimit(),
+      turnTimeLimit: _parseTurnTimeLimit(),
     );
   }
 
@@ -103,6 +114,7 @@ class PointModeSettingsViewModel extends ChangeNotifier {
       _scoredGameSettingsRepository.save(
         playerNames: _validSetupPlayerNames,
         roundLimitText: _roundLimitText.trim(),
+        turnTimeLimitText: _turnTimeLimitText.trim(),
       ),
     );
   }
@@ -128,6 +140,7 @@ class PointModeSettingsViewModel extends ChangeNotifier {
               .toList()
         : [_createSetupPlayer(), _createSetupPlayer()];
     _roundLimitText = _scoredGameSettingsRepository.loadRoundLimitText();
+    _turnTimeLimitText = _scoredGameSettingsRepository.loadTurnTimeLimitText();
   }
 
   SetupPlayerDraft _createSetupPlayer({String name = ''}) {
@@ -143,5 +156,24 @@ class PointModeSettingsViewModel extends ChangeNotifier {
     }
 
     return int.parse(trimmedRoundLimit);
+  }
+
+  Duration? _parseTurnTimeLimit() {
+    final trimmedTurnTimeLimit = _turnTimeLimitText.trim();
+    if (trimmedTurnTimeLimit.isEmpty) {
+      return null;
+    }
+
+    return Duration(minutes: int.parse(trimmedTurnTimeLimit));
+  }
+
+  bool _isPositiveOptionalInt(String value) {
+    final trimmedValue = value.trim();
+    if (trimmedValue.isEmpty) {
+      return true;
+    }
+
+    final parsedValue = int.tryParse(trimmedValue);
+    return parsedValue != null && parsedValue > 0;
   }
 }

@@ -6,6 +6,7 @@ class ScoredGameSettingsRepository {
 
   static const _playerNamesKey = 'scoredGame.playerNames';
   static const _roundLimitTextKey = 'scoredGame.roundLimitText';
+  static const _turnTimeLimitTextKey = 'scoredGame.turnTimeLimitText';
 
   final SharedPreferences _preferences;
 
@@ -17,13 +18,19 @@ class ScoredGameSettingsRepository {
     return _preferences.getString(_roundLimitTextKey) ?? '';
   }
 
+  String loadTurnTimeLimitText() {
+    return _preferences.getString(_turnTimeLimitTextKey) ?? '';
+  }
+
   Future<void> save({
     required List<String> playerNames,
     required String roundLimitText,
+    required String turnTimeLimitText,
   }) async {
     await Future.wait([
       _preferences.setStringList(_playerNamesKey, playerNames),
       _preferences.setString(_roundLimitTextKey, roundLimitText),
+      _preferences.setString(_turnTimeLimitTextKey, turnTimeLimitText),
     ]);
   }
 }

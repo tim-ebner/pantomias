@@ -39,6 +39,8 @@ dependencies:
   provider: ^6.1.5+1
   go_router: ^17.0.1
   shared_preferences: ^2.5.5
+  audioplayers: ^6.7.1
+  vibration: ^3.1.8
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +65,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/audio/time_up.wav
     - assets/images/hidden.webp
     - assets/images/pants/ant.webp
     - assets/images/pants/backpack.webp

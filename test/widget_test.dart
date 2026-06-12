@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:pantomias/data/model/scored_game_settings_repository.dart';
+import 'package:pantomias/data/model/turn_timeout_alert.dart';
 import 'package:pantomias/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,13 +53,14 @@ void main() {
     expect(_startScoredGameButton(tester).onPressed, isNotNull);
   });
 
-  testWidgets('scored setup restores saved players and rounds as editable', (
+  testWidgets('scored setup restores saved players, rounds, and time', (
     tester,
   ) async {
     await _pumpApp(
       tester,
       savedPlayerNames: ['Ada', 'Ben'],
       savedRoundLimitText: '3',
+      savedTurnTimeLimitText: '2',
     );
 
     await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
@@ -67,6 +69,7 @@ void main() {
     expect(_textFormField(tester, 'player-name-field-0').initialValue, 'Ada');
     expect(_textFormField(tester, 'player-name-field-1').initialValue, 'Ben');
     expect(_textFormField(tester, 'round-limit-field').initialValue, '3');
+    expect(_textFormField(tester, 'turn-time-limit-field').initialValue, '2');
 
     await tester.enterText(
       find.byKey(const ValueKey('player-name-field-0')),
@@ -78,12 +81,26 @@ void main() {
       '4',
     );
     await tester.pump();
+    await tester.enterText(
+      find.byKey(const ValueKey('turn-time-limit-field')),
+      '5',
+    );
+    await tester.pump();
 
     await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
     await tester.pumpAndSettle();
 
     expect(find.text('Am Zug: Cara'), findsOneWidget);
     expect(find.text('Runde 1 von 4'), findsOneWidget);
+    expect(find.text('5:00'), findsOneWidget);
+  });
+
+  testWidgets('scored setup blocks zero time limit', (tester) async {
+    await _openScoredSetup(tester);
+    await _enterScoredSetup(tester, time: '0');
+
+    expect(_startScoredGameButton(tester).onPressed, isNull);
+    expect(find.text('Bitte positive Minutenzahl eingeben'), findsOneWidget);
   });
 
   testWidgets(
@@ -115,6 +132,51 @@ void main() {
     expect(find.text('Am Zug: Bob'), findsOneWidget);
     expect(_scoreText(tester, 0), '0');
     expect(_scoreText(tester, 1), '0');
+  });
+
+  testWidgets('timed scored game alerts at timeout without rotating', (
+    tester,
+  ) async {
+    final turnTimeoutAlert = _FakeTurnTimeoutAlert();
+    await _startScoredGame(
+      tester,
+      time: '1',
+      turnTimeoutAlert: turnTimeoutAlert,
+    );
+
+    expect(find.text('Am Zug: Alice'), findsOneWidget);
+    expect(find.text('1:00'), findsOneWidget);
+
+    await tester.pump(const Duration(minutes: 1));
+    await tester.pump();
+
+    expect(turnTimeoutAlert.playCount, 1);
+    expect(find.text('Zeit abgelaufen'), findsOneWidget);
+    expect(find.text('Am Zug: Alice'), findsOneWidget);
+    expect(_scoreText(tester, 0), '0');
+    expect(_scoreText(tester, 1), '0');
+
+    await tester.tap(find.byKey(const ValueKey('guessed-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Am Zug: Bob'), findsOneWidget);
+    expect(_scoreText(tester, 0), '1');
+    expect(find.text('1:00'), findsOneWidget);
+  });
+
+  testWidgets('untimed scored game does not show or trigger the timer', (
+    tester,
+  ) async {
+    final turnTimeoutAlert = _FakeTurnTimeoutAlert();
+    await _startScoredGame(tester, turnTimeoutAlert: turnTimeoutAlert);
+
+    expect(find.byKey(const ValueKey('turn-timer-label')), findsNothing);
+
+    await tester.pump(const Duration(minutes: 2));
+    await tester.pump();
+
+    expect(turnTimeoutAlert.playCount, 0);
+    expect(find.text('Am Zug: Alice'), findsOneWidget);
   });
 
   testWidgets('scored game shows results after the configured rounds', (
@@ -182,7 +244,7 @@ void main() {
     await _pumpApp(tester, settingsRepository: settingsRepository);
     await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
     await tester.pumpAndSettle();
-    await _enterScoredSetup(tester, rounds: '2');
+    await _enterScoredSetup(tester, rounds: '2', time: '3');
 
     await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
     await tester.pumpAndSettle();
@@ -196,6 +258,7 @@ void main() {
     expect(_textFormField(tester, 'player-name-field-0').initialValue, 'Alice');
     expect(_textFormField(tester, 'player-name-field-1').initialValue, 'Bob');
     expect(_textFormField(tester, 'round-limit-field').initialValue, '2');
+    expect(_textFormField(tester, 'turn-time-limit-field').initialValue, '3');
   });
 
   testWidgets('new scored game restarts with same players and rounds', (
@@ -221,19 +284,27 @@ void main() {
 Future<void> _pumpApp(
   WidgetTester tester, {
   ScoredGameSettingsRepository? settingsRepository,
+  TurnTimeoutAlert? turnTimeoutAlert,
   List<String>? savedPlayerNames,
   String savedRoundLimitText = '',
+  String savedTurnTimeLimitText = '',
 }) async {
   settingsRepository ??= await _createSettingsRepository();
-  if (savedPlayerNames != null || savedRoundLimitText.isNotEmpty) {
+  if (savedPlayerNames != null ||
+      savedRoundLimitText.isNotEmpty ||
+      savedTurnTimeLimitText.isNotEmpty) {
     await settingsRepository.save(
       playerNames: savedPlayerNames ?? [],
       roundLimitText: savedRoundLimitText,
+      turnTimeLimitText: savedTurnTimeLimitText,
     );
   }
 
   await tester.pumpWidget(
-    MyApp(scoredGameSettingsRepository: settingsRepository),
+    MyApp(
+      scoredGameSettingsRepository: settingsRepository,
+      turnTimeoutAlert: turnTimeoutAlert,
+    ),
   );
   await tester.pump();
 }
@@ -244,17 +315,27 @@ Future<ScoredGameSettingsRepository> _createSettingsRepository() async {
   return ScoredGameSettingsRepository(preferences: preferences);
 }
 
-Future<void> _openScoredSetup(WidgetTester tester) async {
-  await _pumpApp(tester);
+Future<void> _openScoredSetup(
+  WidgetTester tester, {
+  TurnTimeoutAlert? turnTimeoutAlert,
+}) async {
+  await _pumpApp(tester, turnTimeoutAlert: turnTimeoutAlert);
   await tester.tap(find.byKey(const ValueKey('scored-setup-button')));
   await tester.pumpAndSettle();
 }
 
-Future<void> _startScoredGame(WidgetTester tester, {String? rounds}) async {
+Future<void> _startScoredGame(
+  WidgetTester tester, {
+  String? rounds,
+  String? time,
+  TurnTimeoutAlert? turnTimeoutAlert,
+}) async {
   await _startScoredGameWithPlayers(
     tester,
     playerNames: ['Alice', 'Bob'],
     rounds: rounds,
+    time: time,
+    turnTimeoutAlert: turnTimeoutAlert,
   );
 }
 
@@ -262,8 +343,10 @@ Future<void> _startScoredGameWithPlayers(
   WidgetTester tester, {
   required List<String> playerNames,
   String? rounds,
+  String? time,
+  TurnTimeoutAlert? turnTimeoutAlert,
 }) async {
-  await _openScoredSetup(tester);
+  await _openScoredSetup(tester, turnTimeoutAlert: turnTimeoutAlert);
 
   for (var playerIndex = 2; playerIndex < playerNames.length; playerIndex++) {
     await tester.tap(find.byKey(const ValueKey('add-player-button')));
@@ -286,11 +369,23 @@ Future<void> _startScoredGameWithPlayers(
     await tester.pump();
   }
 
+  if (time != null) {
+    await tester.enterText(
+      find.byKey(const ValueKey('turn-time-limit-field')),
+      time,
+    );
+    await tester.pump();
+  }
+
   await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
   await tester.pumpAndSettle();
 }
 
-Future<void> _enterScoredSetup(WidgetTester tester, {String? rounds}) async {
+Future<void> _enterScoredSetup(
+  WidgetTester tester, {
+  String? rounds,
+  String? time,
+}) async {
   await tester.enterText(
     find.byKey(const ValueKey('player-name-field-0')),
     'Alice',
@@ -306,6 +401,14 @@ Future<void> _enterScoredSetup(WidgetTester tester, {String? rounds}) async {
     await tester.enterText(
       find.byKey(const ValueKey('round-limit-field')),
       rounds,
+    );
+    await tester.pump();
+  }
+
+  if (time != null) {
+    await tester.enterText(
+      find.byKey(const ValueKey('turn-time-limit-field')),
+      time,
     );
     await tester.pump();
   }
@@ -325,5 +428,26 @@ String _scoreText(WidgetTester tester, int playerIndex) {
 }
 
 TextFormField _textFormField(WidgetTester tester, String key) {
-  return tester.widget<TextFormField>(find.byKey(ValueKey(key)));
+  final field = find.byKey(ValueKey(key));
+  final nestedField = find.descendant(
+    of: field,
+    matching: find.byType(TextFormField),
+  );
+  if (nestedField.evaluate().isNotEmpty) {
+    return tester.widget<TextFormField>(nestedField);
+  }
+
+  return tester.widget<TextFormField>(field);
+}
+
+class _FakeTurnTimeoutAlert implements TurnTimeoutAlert {
+  int playCount = 0;
+
+  @override
+  Future<void> play() async {
+    playCount += 1;
+  }
+
+  @override
+  Future<void> dispose() async {}
 }
