@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pantomias/l10n/l10n.dart';
-import 'package:pantomias/ui/shared/commons.dart';
+import 'package:pantomias/shared/commons.dart';
 
 import '../point_mode_settings_view_model.dart';
 import 'point_mode_input_style.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pantomias/l10n/l10n.dart';
-import 'package:pantomias/ui/home/widgets/next_button.dart';
-import 'package:pantomias/ui/shared/commons.dart';
+import 'package:pantomias/shared/widgets/next_button.dart';
+import 'package:pantomias/shared/commons.dart';
 
 import 'point_mode_settings_view_model.dart';
 import 'widgets/player_name_field.dart';

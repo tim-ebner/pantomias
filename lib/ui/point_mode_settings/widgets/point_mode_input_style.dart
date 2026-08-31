@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pantomias/ui/shared/commons.dart';
+import 'package:pantomias/shared/commons.dart';
 
 const pointModeFieldBorderColor = Color(0xFFB9CBC5);
 const _pointModeFieldFillColor = Color(0xFFFFFFFF);

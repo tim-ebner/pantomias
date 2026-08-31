@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
-import 'package:pantomias/data/model/image_meta_info_repository.dart';
-import 'package:pantomias/data/model/scored_game_settings_repository.dart';
-import 'package:pantomias/data/model/turn_timeout_alert.dart';
+import 'package:pantomias/core/data/image_meta_info_repository.dart';
+import 'package:pantomias/core/data/scored_game_settings_repository.dart';
+import 'package:pantomias/core/services/turn_timeout_alert.dart';
 import 'package:pantomias/routing/routes.dart';
 import 'package:provider/provider.dart';
 

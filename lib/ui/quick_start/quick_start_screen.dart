@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pantomias/l10n/l10n.dart';
-import 'package:pantomias/ui/home/widgets/next_button.dart';
-import 'package:pantomias/ui/shared/image_stage/image_stage.dart';
+import 'package:pantomias/shared/widgets/next_button.dart';
+import 'package:pantomias/shared/image_stage/image_stage.dart';
 
 import 'quick_start_view_model.dart';
 

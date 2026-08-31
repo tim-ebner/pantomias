@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pantomias/ui/shared/commons.dart';
+import 'package:pantomias/shared/commons.dart';
 
 class NextButton extends StatelessWidget {
   const NextButton({

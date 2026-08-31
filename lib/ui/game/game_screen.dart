@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pantomias/l10n/l10n.dart';
 
-import '../shared/image_stage/image_stage.dart';
+import 'package:pantomias/shared/image_stage/image_stage.dart';
 import 'game_view_model.dart';
 import 'widgets/score_board.dart';
 import 'widgets/scored_turn_actions.dart';

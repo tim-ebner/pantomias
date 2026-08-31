@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:pantomias/data/model/scored_game_settings_repository.dart';
+import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 
 class SetupPlayerDraft {
   SetupPlayerDraft({required this.id, this.name = ''});

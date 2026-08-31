@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:pantomias/data/model/image_meta_info_repository.dart';
-import 'package:pantomias/data/model/scored_game_settings_repository.dart';
-import 'package:pantomias/data/model/turn_timeout_alert.dart';
+import 'package:pantomias/core/data/image_meta_info_repository.dart';
+import 'package:pantomias/core/data/scored_game_settings_repository.dart';
+import 'package:pantomias/core/services/turn_timeout_alert.dart';
 
 import '../game/game_view_model.dart';
 import '../point_mode_settings/point_mode_settings_view_model.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:pantomias/data/model/image_meta_info_repository.dart';
-import 'package:pantomias/data/model/scored_game_settings_repository.dart';
+import 'package:pantomias/core/data/image_meta_info_repository.dart';
+import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 import 'package:pantomias/l10n/l10n.dart';
-import 'package:pantomias/data/model/turn_timeout_alert.dart';
+import 'package:pantomias/core/services/turn_timeout_alert.dart';
 import 'package:pantomias/routing/router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

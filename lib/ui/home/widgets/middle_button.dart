@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pantomias/l10n/l10n.dart';
-import 'package:pantomias/ui/shared/commons.dart';
+import 'package:pantomias/shared/commons.dart';
 
 class MiddleButton extends StatelessWidget {
   const MiddleButton({super.key, required this.onPressed});

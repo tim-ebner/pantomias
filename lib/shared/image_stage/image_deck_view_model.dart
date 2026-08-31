@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:pantomias/data/model/image_meta_info.dart';
-import 'package:pantomias/data/model/image_meta_info_repository.dart';
+import 'package:pantomias/core/data/image_meta_info.dart';
+import 'package:pantomias/core/data/image_meta_info_repository.dart';
 
 class ImageDeckViewModel extends ChangeNotifier {
   ImageDeckViewModel({

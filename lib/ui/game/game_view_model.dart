@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:pantomias/data/model/image_meta_info_repository.dart';
-import 'package:pantomias/data/model/turn_timeout_alert.dart';
+import 'package:pantomias/core/data/image_meta_info_repository.dart';
+import 'package:pantomias/core/services/turn_timeout_alert.dart';
 
-import '../shared/image_stage/image_deck_view_model.dart';
+import 'package:pantomias/shared/image_stage/image_deck_view_model.dart';
 
 class PlayerScore {
   PlayerScore({required this.name, this.score = 0});
