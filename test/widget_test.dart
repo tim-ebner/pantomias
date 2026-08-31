@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantomias/app.dart';
-import 'package:pantomias/core/data/image_meta_info.dart';
-import 'package:pantomias/core/data/image_meta_info_repository.dart';
 import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 import 'package:pantomias/core/services/turn_timeout_alert.dart';
 import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/features/point_mode_settings/view/point_mode_settings_screen.dart';
 import 'package:pantomias/features/point_mode_settings/viewmodel/point_mode_settings_view_model.dart';
-import 'package:pantomias/shared/image_stage/image_deck_view_model.dart';
-import 'package:pantomias/shared/image_stage/image_stage.dart';
 import 'package:pantomias/shared/widgets/next_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,22 +49,6 @@ void main() {
 
     expect(_startScoredGameButton(tester).onPressed, isNull);
     expect(find.text('Please enter a positive time'), findsOneWidget);
-  });
-
-  testWidgets('image stage localizes prompt and hidden label', (tester) async {
-    await _pumpImageStage(tester, locale: const Locale('de'));
-
-    expect(find.text('Katze'), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('image-stage-picture')));
-    await tester.pumpAndSettle();
-    expect(find.text('Versteckt'), findsOneWidget);
-
-    await _pumpImageStage(tester, locale: const Locale('en'));
-
-    expect(find.text('Cat'), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('image-stage-picture')));
-    await tester.pumpAndSettle();
-    expect(find.text('Hidden'), findsOneWidget);
   });
 
   testWidgets(
@@ -483,26 +463,6 @@ Future<void> _pumpApp(
   await tester.pump();
 }
 
-Future<void> _pumpImageStage(
-  WidgetTester tester, {
-  required Locale locale,
-}) async {
-  final viewModel = ImageDeckViewModel(
-    imageMetaInfoRepository: _SingleImageMetaInfoRepository(),
-  )..start();
-  addTearDown(viewModel.dispose);
-
-  await tester.pumpWidget(
-    MaterialApp(
-      locale: locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(body: ImageStage(viewModel: viewModel)),
-    ),
-  );
-  await tester.pump();
-}
-
 Future<void> _pumpPointModeSettingsScreen(
   WidgetTester tester, {
   Locale locale = const Locale('de'),
@@ -695,18 +655,6 @@ TextFormField _textFormField(WidgetTester tester, String key) {
 String _textFormFieldText(WidgetTester tester, String key) {
   final field = _textFormField(tester, key);
   return field.controller?.text ?? field.initialValue ?? '';
-}
-
-class _SingleImageMetaInfoRepository extends ImageMetaInfoRepository {
-  @override
-  List<ImageMetaInfo> getAllImageMetaInfo() {
-    return [
-      const ImageMetaInfo(
-        promptId: 'cat',
-        imageUrl: 'assets/images/pants/cat.webp',
-      ),
-    ];
-  }
 }
 
 class _FakeTurnTimeoutAlert implements TurnTimeoutAlert {

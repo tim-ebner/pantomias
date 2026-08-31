@@ -41,7 +41,6 @@ void main() {
     expect(viewModel.isImageShown, isTrue);
     expect(viewModel.currentImage, isNotNull);
     expect(images.map((i) => i.promptId), contains(viewModel.currentImage!.promptId));
-    expect(viewModel.imageAssetPath, viewModel.currentImage!.imageUrl);
   });
 
   test('toggleImage hides and reveals the current image', () {
@@ -50,7 +49,6 @@ void main() {
 
     viewModel.toggleImage();
     expect(viewModel.isImageShown, isFalse);
-    expect(viewModel.imageAssetPath, ImageDeckViewModel.hiddenImageAssetPath);
 
     viewModel.toggleImage();
     expect(viewModel.isImageShown, isTrue);

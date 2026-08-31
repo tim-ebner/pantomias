@@ -122,6 +122,12 @@ abstract class AppLocalizations {
   /// **'Spiel mit Punkten'**
   String get scoredGameModeLabel;
 
+  /// No description provided for @pointModeSetupTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Punkte-Setup'**
+  String get pointModeSetupTitle;
+
   /// No description provided for @nextImageLabel.
   ///
   /// In de, this message translates to:

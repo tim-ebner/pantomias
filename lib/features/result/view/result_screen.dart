@@ -168,12 +168,13 @@ class _WinnerCardState extends State<_WinnerCard> {
       clipBehavior: Clip.none,
       alignment: Alignment.topCenter,
       children: [
+        const Positioned(top: -28.0, child: _WinnerGlow()),
         Container(
           margin: const EdgeInsets.only(top: 12.0),
           padding: const EdgeInsets.fromLTRB(20.0, 28.0, 20.0, 16.0),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: accentColor, width: 2.0),
+            border: Border.all(color: quickStartColor, width: 2.5),
             borderRadius: BorderRadius.circular(28.0),
           ),
           child: Row(
@@ -217,6 +218,65 @@ class _WinnerCardState extends State<_WinnerCard> {
         ),
         const Positioned(top: 0.0, child: _WinnerBadge()),
       ],
+    );
+  }
+}
+
+/// Soft pulsing glow behind the winner card, echoing the confetti mood of
+/// the result screen.
+class _WinnerGlow extends StatefulWidget {
+  const _WinnerGlow();
+
+  @override
+  State<_WinnerGlow> createState() => _WinnerGlowState();
+}
+
+class _WinnerGlowState extends State<_WinnerGlow>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _opacity;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    _opacity = Tween<double>(
+      begin: 0.2,
+      end: 0.35,
+    ).animate(CurveTween(curve: Curves.easeInOut).animate(_controller));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!MediaQuery.disableAnimationsOf(context)) {
+      _controller.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: FadeTransition(
+        opacity: _opacity,
+        child: Container(
+          width: 120.0,
+          height: 120.0,
+          decoration: const BoxDecoration(
+            color: ResultScreen._winnerBadgeColor,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
     );
   }
 }

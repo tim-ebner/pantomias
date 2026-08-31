@@ -4,6 +4,7 @@
   "startTileTitle": "Los geht's!",
   "quickStartLabel": "Schnellstart",
   "scoredGameModeLabel": "Spiel mit Punkten",
+  "pointModeSetupTitle": "Punkte-Setup",
   "nextImageLabel": "Nächstes Bild",
   "modeSelectionTooltip": "Modusauswahl",
   "roundLabel": "Runde {round}",

@@ -60,14 +60,14 @@ class PointModeSettingsScreen extends StatelessWidget {
                 key: const ValueKey('add-player-button'),
                 style: TextButton.styleFrom(
                   foregroundColor: brandColor,
-                  textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.w500,
+                  textStyle: const TextStyle(
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.w800,
                     letterSpacing: 0.0,
                   ),
                 ),
                 onPressed: viewModel.addSetupPlayer,
-                icon: const Icon(Icons.person_add_alt_1_outlined, size: 28.0),
+                icon: const Icon(Icons.add, size: 20.0),
                 label: Text(l10n.addPlayerLabel),
               ),
             ),
@@ -78,6 +78,7 @@ class PointModeSettingsScreen extends StatelessWidget {
                   key: const ValueKey('round-limit-field'),
                   initialValue: viewModel.roundLimitText,
                   labelText: l10n.roundsOptionalLabel,
+                  hintText: '∞',
                   errorText: viewModel.isRoundLimitValid
                       ? null
                       : l10n.positiveRoundsError,
@@ -96,6 +97,7 @@ class PointModeSettingsScreen extends StatelessWidget {
                   key: const ValueKey('turn-time-limit-field'),
                   initialValue: viewModel.turnTimeLimitText,
                   labelText: l10n.timeOptionalLabel,
+                  hintText: '∞',
                   errorText: viewModel.isTurnTimeLimitValid
                       ? null
                       : l10n.positiveTimeError,
@@ -191,6 +193,7 @@ class _SteppedSetupField extends StatefulWidget {
     required this.onIncrement,
     required this.decrementButtonKey,
     required this.incrementButtonKey,
+    this.hintText,
     this.inputFormatters,
     this.keyboardType = TextInputType.number,
     this.textInputAction = TextInputAction.done,
@@ -198,6 +201,7 @@ class _SteppedSetupField extends StatefulWidget {
 
   final String initialValue;
   final String labelText;
+  final String? hintText;
   final String? errorText;
   final ValueChanged<String> onChanged;
   final VoidCallback onDecrement;
@@ -240,46 +244,83 @@ class _SteppedSetupFieldState extends State<_SteppedSetupField> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextFormField(
-            controller: _controller,
-            cursorColor: brandColor,
-            style: pointModeInputTextStyle(context),
-            decoration: buildPointModeInputDecoration(
-              context,
-              labelText: widget.labelText,
-              errorText: widget.errorText,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: pointModeCardBorderColor, width: 2.5),
+        borderRadius: BorderRadius.circular(24.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.labelText,
+            style: const TextStyle(
+              fontSize: 13.0,
+              fontWeight: FontWeight.w800,
+              color: pointModeLabelColor,
             ),
-            inputFormatters:
-                widget.inputFormatters ??
-                [FilteringTextInputFormatter.digitsOnly],
-            keyboardType: widget.keyboardType,
-            onChanged: widget.onChanged,
-            textInputAction: widget.textInputAction,
           ),
-        ),
-        const SizedBox(width: 12.0),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _StepControlButton(
-              buttonKey: widget.incrementButtonKey,
-              tooltip: context.l10n.increaseTooltip,
-              icon: Icons.add,
-              onPressed: widget.onIncrement,
-            ),
-            const SizedBox(height: 10.0),
-            _StepControlButton(
-              buttonKey: widget.decrementButtonKey,
-              tooltip: context.l10n.decreaseTooltip,
-              icon: Icons.remove,
-              onPressed: widget.onDecrement,
+          const SizedBox(height: 6.0),
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _controller,
+                  cursorColor: brandColor,
+                  style: const TextStyle(
+                    fontSize: 28.0,
+                    fontWeight: FontWeight.w900,
+                    color: pointModeTextColor,
+                  ),
+                  decoration: InputDecoration(
+                    isCollapsed: true,
+                    border: InputBorder.none,
+                    hintText: widget.hintText,
+                    hintStyle: const TextStyle(
+                      fontSize: 28.0,
+                      fontWeight: FontWeight.w900,
+                      color: pointModeFieldBorderColor,
+                    ),
+                  ),
+                  inputFormatters:
+                      widget.inputFormatters ??
+                      [FilteringTextInputFormatter.digitsOnly],
+                  keyboardType: widget.keyboardType,
+                  onChanged: widget.onChanged,
+                  textInputAction: widget.textInputAction,
+                ),
+              ),
+              const SizedBox(width: 6.0),
+              _StepControlButton(
+                buttonKey: widget.decrementButtonKey,
+                tooltip: context.l10n.decreaseTooltip,
+                icon: Icons.remove,
+                onPressed: widget.onDecrement,
+              ),
+              const SizedBox(width: 6.0),
+              _StepControlButton(
+                buttonKey: widget.incrementButtonKey,
+                tooltip: context.l10n.increaseTooltip,
+                icon: Icons.add,
+                onPressed: widget.onIncrement,
+              ),
+            ],
+          ),
+          if (widget.errorText != null) ...[
+            const SizedBox(height: 6.0),
+            Text(
+              widget.errorText!,
+              style: const TextStyle(
+                fontSize: 12.0,
+                fontWeight: FontWeight.w600,
+                color: pointModeErrorColor,
+              ),
             ),
           ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -302,9 +343,9 @@ class _StepControlButton extends StatelessWidget {
     return Tooltip(
       message: tooltip,
       child: Material(
-        color: Colors.white,
+        color: pageBackgroundColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18.0),
+          borderRadius: BorderRadius.circular(14.0),
           side: const BorderSide(color: pointModeFieldBorderColor, width: 2.0),
         ),
         clipBehavior: Clip.antiAlias,
@@ -312,9 +353,9 @@ class _StepControlButton extends StatelessWidget {
           key: buttonKey,
           onTap: onPressed,
           child: SizedBox(
-            width: 42.0,
-            height: 42.0,
-            child: Icon(icon, color: brandColor, size: 20.0),
+            width: 36.0,
+            height: 36.0,
+            child: Icon(icon, color: brandColor, size: 18.0),
           ),
         ),
       ),

@@ -11,8 +11,6 @@ class ImageDeckViewModel extends ChangeNotifier {
   }) : _imageMetaInfoRepository = imageMetaInfoRepository,
        _random = random ?? Random();
 
-  static const hiddenImageAssetPath = 'assets/images/hidden.webp';
-
   final ImageMetaInfoRepository _imageMetaInfoRepository;
   final Random _random;
 
@@ -22,15 +20,6 @@ class ImageDeckViewModel extends ChangeNotifier {
   List<ImageMetaInfo> _remainingImages = [];
   ImageMetaInfo? _currentImage;
   ImageMetaInfo? get currentImage => _currentImage;
-
-  String get imageAssetPath {
-    final currentImage = _currentImage;
-    if (currentImage == null || !_isImageShown) {
-      return hiddenImageAssetPath;
-    }
-
-    return currentImage.imageUrl;
-  }
 
   void start() {
     _resetImages();

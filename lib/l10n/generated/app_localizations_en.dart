@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scoredGameModeLabel => 'Points Game';
 
   @override
+  String get pointModeSetupTitle => 'Points Setup';
+
+  @override
   String get nextImageLabel => 'Next Image';
 
   @override

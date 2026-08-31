@@ -21,6 +21,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scoredGameModeLabel => 'Spiel mit Punkten';
 
   @override
+  String get pointModeSetupTitle => 'Punkte-Setup';
+
+  @override
   String get nextImageLabel => 'Nächstes Bild';
 
   @override

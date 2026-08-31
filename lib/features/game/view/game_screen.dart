@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pantomias/l10n/l10n.dart';
+import 'package:pantomias/shared/widgets/stage_card.dart';
 
 import '../viewmodel/game_view_model.dart';
 import 'widgets/score_board.dart';
 import 'widgets/scored_turn_actions.dart';
-import 'widgets/stage_card.dart';
 import 'widgets/turn_timer_ring.dart';
 
 class GameScreen extends StatefulWidget {

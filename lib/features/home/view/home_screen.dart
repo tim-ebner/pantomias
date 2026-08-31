@@ -37,42 +37,66 @@ class HomeScreen extends StatelessWidget {
 
         return ColoredBox(
           color: pageBackgroundColor,
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                horizontalPadding,
-                topPadding,
-                horizontalPadding,
-                bottomPadding,
-              ),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: maxContentWidth),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _StartTile(size: tileSize),
-                    const SizedBox(height: tileGap),
-                    NextButton(
-                      key: const ValueKey('quick-start-button'),
-                      shadowColor: tileShadowColor,
-                      icon: Icons.play_circle_outline,
-                      label: l10n.quickStartLabel,
-                      onPressed: onStartQuickStart,
-                    ),
-                    const SizedBox(height: buttonGap),
-                    NextButton(
-                      key: const ValueKey('scored-setup-button'),
-                      backgroundColor: Colors.white,
-                      icon: Icons.workspace_premium_outlined,
-                      label: l10n.scoredGameModeLabel,
-                      labelMaxLines: 2,
-                      onPressed: onStartScoredSetup,
-                    ),
-                  ],
+          child: Stack(
+            children: [
+              const Positioned(
+                top: -60.0,
+                right: -70.0,
+                child: _BackgroundBlob(
+                  diameter: 220.0,
+                  color: quickStartColor,
+                  opacity: 0.16,
                 ),
               ),
-            ),
+              const Positioned(
+                bottom: 60.0,
+                left: -80.0,
+                child: _BackgroundBlob(
+                  diameter: 200.0,
+                  color: brandColor,
+                  opacity: 0.07,
+                ),
+              ),
+              Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(
+                    horizontalPadding,
+                    topPadding,
+                    horizontalPadding,
+                    bottomPadding,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: maxContentWidth,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _StartTile(size: tileSize),
+                        const SizedBox(height: tileGap),
+                        NextButton(
+                          key: const ValueKey('quick-start-button'),
+                          shadowColor: tileShadowColor,
+                          icon: Icons.play_circle_outline,
+                          label: l10n.quickStartLabel,
+                          onPressed: onStartQuickStart,
+                        ),
+                        const SizedBox(height: buttonGap),
+                        NextButton(
+                          key: const ValueKey('scored-setup-button'),
+                          backgroundColor: Colors.white,
+                          icon: Icons.workspace_premium_outlined,
+                          label: l10n.scoredGameModeLabel,
+                          labelMaxLines: 2,
+                          onPressed: onStartScoredSetup,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -178,11 +202,7 @@ class _StartTileState extends State<_StartTile>
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.theater_comedy_outlined,
-                    color: brandColor,
-                    size: iconSize,
-                  ),
+                  _MascotFace(size: iconSize),
                   SizedBox(height: spacing),
                   FittedBox(
                     fit: BoxFit.scaleDown,
@@ -202,6 +222,114 @@ class _StartTileState extends State<_StartTile>
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Large blurred-looking circle used to decorate the home background, as
+/// seen behind the start tile in the design.
+class _BackgroundBlob extends StatelessWidget {
+  const _BackgroundBlob({
+    required this.diameter,
+    required this.color,
+    required this.opacity,
+  });
+
+  final double diameter;
+  final Color color;
+  final double opacity;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Container(
+        width: diameter,
+        height: diameter,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: color.withValues(alpha: opacity),
+        ),
+      ),
+    );
+  }
+}
+
+/// Small stylized face (head, eyes, grin) shown inside the start tile.
+class _MascotFace extends StatelessWidget {
+  const _MascotFace({required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final headSize = size * 0.46;
+    final eyeSize = size * 0.11;
+    final bodyWidth = size * 0.76;
+    final bodyHeight = size * 0.51;
+
+    return SizedBox.square(
+      dimension: size,
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0.0,
+            left: (size - headSize) / 2.0,
+            child: Container(
+              width: headSize,
+              height: headSize,
+              decoration: const BoxDecoration(
+                color: brandColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            top: headSize * 0.32,
+            left: size / 2.0 - eyeSize * 1.4,
+            child: _MascotEye(size: eyeSize),
+          ),
+          Positioned(
+            top: headSize * 0.32,
+            left: size / 2.0 + eyeSize * 0.4,
+            child: _MascotEye(size: eyeSize),
+          ),
+          Positioned(
+            bottom: 0.0,
+            left: (size - bodyWidth) / 2.0,
+            child: Container(
+              width: bodyWidth,
+              height: bodyHeight,
+              decoration: BoxDecoration(
+                color: quickStartColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(bodyWidth * 0.46),
+                  topRight: Radius.circular(bodyWidth * 0.46),
+                  bottomLeft: Radius.circular(size * 0.11),
+                  bottomRight: Radius.circular(size * 0.11),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MascotEye extends StatelessWidget {
+  const _MascotEye({required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
       ),
     );
   }
