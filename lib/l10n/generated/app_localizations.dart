@@ -176,6 +176,24 @@ abstract class AppLocalizations {
   /// **'Versteckt'**
   String get imageHiddenLabel;
 
+  /// No description provided for @turnGuessedFeedbackLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Erraten!'**
+  String get turnGuessedFeedbackLabel;
+
+  /// No description provided for @stageHiddenHelperLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Tippen zum Aufdecken'**
+  String get stageHiddenHelperLabel;
+
+  /// No description provided for @stageRevealedHelperLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Tippen zum Verstecken'**
+  String get stageRevealedHelperLabel;
+
   /// No description provided for @addPlayerLabel.
   ///
   /// In de, this message translates to:

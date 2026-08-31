@@ -16,3 +16,11 @@ const pageBackgroundColor = Color(0xFFF3FBF8);
 const tileShadowColor = Color(0xFF005B4C);
 const buttonShadowColor = Color(0x33006D5B);
 const accentColor = Color(0xFF2ED8B0);
+
+/// Game screen redesign tokens
+const wrongColor = Color(0xFFE0553D);
+const timerAmberColor = Color(0xFFE8B054);
+const timerTrackColor = Color(0xFFE3ECE8);
+const scorePillInactiveBorderColor = Color(0xFFDDE6E2);
+const scorePillInactiveTextColor = Color(0xFF3E4F49);
+const stageHelperTextColor = Color(0xFF8FA79E);

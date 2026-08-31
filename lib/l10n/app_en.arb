@@ -37,6 +37,9 @@
   "guessedLabel": "Guessed",
   "timeExpiredLabel": "Time's up",
   "imageHiddenLabel": "Hidden",
+  "turnGuessedFeedbackLabel": "Guessed!",
+  "stageHiddenHelperLabel": "Tap to reveal",
+  "stageRevealedHelperLabel": "Tap to hide",
   "addPlayerLabel": "Add Player",
   "playerLabel": "Player {number}",
   "@playerLabel": {

@@ -54,6 +54,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get imageHiddenLabel => 'Versteckt';
 
   @override
+  String get turnGuessedFeedbackLabel => 'Erraten!';
+
+  @override
+  String get stageHiddenHelperLabel => 'Tippen zum Aufdecken';
+
+  @override
+  String get stageRevealedHelperLabel => 'Tippen zum Verstecken';
+
+  @override
   String get addPlayerLabel => 'Spieler hinzufügen';
 
   @override

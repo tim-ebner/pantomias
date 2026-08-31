@@ -37,6 +37,9 @@
   "guessedLabel": "Erraten",
   "timeExpiredLabel": "Zeit abgelaufen",
   "imageHiddenLabel": "Versteckt",
+  "turnGuessedFeedbackLabel": "Erraten!",
+  "stageHiddenHelperLabel": "Tippen zum Aufdecken",
+  "stageRevealedHelperLabel": "Tippen zum Verstecken",
   "addPlayerLabel": "Spieler hinzufügen",
   "playerLabel": "Spieler {number}",
   "@playerLabel": {

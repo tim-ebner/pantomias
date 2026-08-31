@@ -14,6 +14,17 @@ import 'package:pantomias/shared/widgets/next_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  setUpAll(() {
+    // The redesigned game screen has infinitely-looping "draw the eye"
+    // animations (active player glow, timer urgency pulse). Those never let
+    // pumpAndSettle() settle, so tests opt into reduce-motion like a real
+    // accessibility user would.
+    TestWidgetsFlutterBinding.ensureInitialized().platformDispatcher
+        .accessibilityFeaturesTestValue = const FakeAccessibilityFeatures(
+      disableAnimations: true,
+    );
+  });
+
   testWidgets('shows German mode selection on app start', (tester) async {
     await _pumpApp(tester);
 
@@ -157,7 +168,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('start-scored-game-button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Am Zug: Cara'), findsOneWidget);
+    expect(_activePlayer('Cara'), findsOneWidget);
     expect(find.text('Runde 1 von 4'), findsOneWidget);
     expect(find.text('5:00'), findsOneWidget);
   });
@@ -209,14 +220,14 @@ void main() {
     (tester) async {
       await _startScoredGame(tester);
 
-      expect(find.text('Am Zug: Alice'), findsOneWidget);
+      expect(_activePlayer('Alice'), findsOneWidget);
       expect(_scoreText(tester, 0), '0');
       expect(_scoreText(tester, 1), '0');
 
       await tester.tap(find.byKey(const ValueKey('guessed-button')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Am Zug: Bob'), findsOneWidget);
+      expect(_activePlayer('Bob'), findsOneWidget);
       expect(_scoreText(tester, 0), '1');
       expect(_scoreText(tester, 1), '0');
     },
@@ -230,7 +241,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('not-guessed-button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Am Zug: Bob'), findsOneWidget);
+    expect(_activePlayer('Bob'), findsOneWidget);
     expect(_scoreText(tester, 0), '0');
     expect(_scoreText(tester, 1), '0');
   });
@@ -245,7 +256,7 @@ void main() {
       turnTimeoutAlert: turnTimeoutAlert,
     );
 
-    expect(find.text('Am Zug: Alice'), findsOneWidget);
+    expect(_activePlayer('Alice'), findsOneWidget);
     expect(find.text('1:00'), findsOneWidget);
 
     await tester.pump(const Duration(minutes: 1));
@@ -253,14 +264,14 @@ void main() {
 
     expect(turnTimeoutAlert.playCount, 1);
     expect(find.text('Zeit abgelaufen'), findsOneWidget);
-    expect(find.text('Am Zug: Alice'), findsOneWidget);
+    expect(_activePlayer('Alice'), findsOneWidget);
     expect(_scoreText(tester, 0), '0');
     expect(_scoreText(tester, 1), '0');
 
     await tester.tap(find.byKey(const ValueKey('guessed-button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Am Zug: Bob'), findsOneWidget);
+    expect(_activePlayer('Bob'), findsOneWidget);
     expect(_scoreText(tester, 0), '1');
     expect(find.text('1:00'), findsOneWidget);
   });
@@ -302,7 +313,7 @@ void main() {
     await tester.pump();
 
     expect(turnTimeoutAlert.playCount, 0);
-    expect(find.text('Am Zug: Alice'), findsOneWidget);
+    expect(_activePlayer('Alice'), findsOneWidget);
   });
 
   testWidgets('scored game shows results after the configured rounds', (
@@ -349,7 +360,7 @@ void main() {
       locale: const Locale('en'),
     );
 
-    expect(find.text('Turn: Alice'), findsOneWidget);
+    expect(_activePlayer('Alice'), findsOneWidget);
     expect(find.text('Round 1 of 1'), findsOneWidget);
     expect(find.text('1:00'), findsOneWidget);
 
@@ -435,7 +446,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('new-scored-game-button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Am Zug: Alice'), findsOneWidget);
+    expect(_activePlayer('Alice'), findsOneWidget);
     expect(find.text('Runde 1 von 1'), findsOneWidget);
     expect(_scoreText(tester, 0), '0');
     expect(_scoreText(tester, 1), '0');
@@ -648,6 +659,16 @@ Future<void> _tapWhenVisible(WidgetTester tester, Finder finder) async {
 NextButton _startScoredGameButton(WidgetTester tester) {
   return tester.widget<NextButton>(
     find.byKey(const ValueKey('start-scored-game-button')),
+  );
+}
+
+/// The game screen highlights the active player's score pill instead of
+/// showing a separate "Am Zug: X" / "Turn: X" label; find that name inside
+/// the pill the redesigned score board marks as active.
+Finder _activePlayer(String name) {
+  return find.descendant(
+    of: find.byKey(const ValueKey('active-player-pill')),
+    matching: find.text(name),
   );
 }
 

@@ -54,6 +54,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imageHiddenLabel => 'Hidden';
 
   @override
+  String get turnGuessedFeedbackLabel => 'Guessed!';
+
+  @override
+  String get stageHiddenHelperLabel => 'Tap to reveal';
+
+  @override
+  String get stageRevealedHelperLabel => 'Tap to hide';
+
+  @override
   String get addPlayerLabel => 'Add Player';
 
   @override

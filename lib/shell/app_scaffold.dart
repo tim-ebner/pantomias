@@ -13,6 +13,9 @@ class AppScaffold extends StatelessWidget {
     this.centerTitle = true,
     this.toolbarHeight = 80.0,
     this.titleSpacing = NavigationToolbar.kMiddleSpacing,
+    this.leading,
+    this.leadingWidth,
+    this.showDivider = true,
   });
 
   static const _titleBarDividerColor = Color(0xFFE3ECE8);
@@ -23,6 +26,9 @@ class AppScaffold extends StatelessWidget {
   final bool centerTitle;
   final double toolbarHeight;
   final double titleSpacing;
+  final Widget? leading;
+  final double? leadingWidth;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +42,16 @@ class AppScaffold extends StatelessWidget {
         centerTitle: centerTitle,
         toolbarHeight: toolbarHeight,
         titleSpacing: titleSpacing,
+        leading: leading,
+        leadingWidth: leadingWidth,
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: pageBackgroundColor,
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,
         ),
-        shape: const Border(bottom: BorderSide(color: _titleBarDividerColor)),
+        shape: showDivider
+            ? const Border(bottom: BorderSide(color: _titleBarDividerColor))
+            : null,
         iconTheme: const IconThemeData(color: brandColor, size: 32.0),
         actionsIconTheme: const IconThemeData(color: brandColor, size: 32.0),
         title: title,
