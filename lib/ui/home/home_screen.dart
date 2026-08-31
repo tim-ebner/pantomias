@@ -64,7 +64,6 @@ class HomeScreen extends StatelessWidget {
                     NextButton(
                       key: const ValueKey('scored-setup-button'),
                       backgroundColor: Colors.white,
-                      shadowColor: buttonShadowColor,
                       icon: Icons.workspace_premium_outlined,
                       label: l10n.scoredGameModeLabel,
                       labelMaxLines: 2,

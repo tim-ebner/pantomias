@@ -33,16 +33,11 @@ class NextButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(36.0),
           boxShadow: [
-            BoxShadow(
-              color: shadowColor,
-              offset: const Offset(0.0, 9.0),
-              blurRadius: 0.0,
-            ),
+            BoxShadow(color: shadowColor, offset: const Offset(0.0, 9.0)),
             if (backgroundColor == Colors.white)
               const BoxShadow(
                 color: buttonShadowColor,
                 offset: Offset(0.0, 18.0),
-                blurRadius: 0.0,
                 spreadRadius: -5.0,
               ),
           ],

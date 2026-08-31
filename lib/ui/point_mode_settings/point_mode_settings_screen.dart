@@ -241,7 +241,6 @@ class _SteppedSetupFieldState extends State<_SteppedSetupField> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: TextFormField(

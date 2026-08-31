@@ -234,7 +234,7 @@ class _WinnerBadge extends StatelessWidget {
       ),
       child: Text(
         context.l10n.winnerBadgeLabel,
-        style: TextStyle(
+        style: const TextStyle(
           color: ResultScreen._winnerBadgeTextColor,
           fontSize: 16.0,
           fontWeight: FontWeight.w800,

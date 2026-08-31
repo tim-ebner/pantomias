@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
 
     return Text(
       context.l10n.appTitle,
-      style: TextStyle(
+      style: const TextStyle(
         color: _brandColor,
         fontSize: 40.0,
         fontWeight: FontWeight.w900,

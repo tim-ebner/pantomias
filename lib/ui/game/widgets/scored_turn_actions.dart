@@ -38,7 +38,6 @@ class ScoredTurnActions extends StatelessWidget {
     );
 
     return Align(
-      alignment: Alignment.center,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 560.0),
         child: LayoutBuilder(

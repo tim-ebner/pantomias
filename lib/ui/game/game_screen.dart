@@ -75,7 +75,6 @@ class _TurnTimer extends StatelessWidget {
         : colorScheme.primaryContainer.withValues(alpha: 0.42);
 
     return Align(
-      alignment: Alignment.center,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 560.0),
         child: DecoratedBox(
