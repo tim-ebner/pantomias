@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pantomias/app.dart';
 import 'package:pantomias/core/data/image_meta_info.dart';
 import 'package:pantomias/core/data/image_meta_info_repository.dart';
 import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 import 'package:pantomias/core/services/turn_timeout_alert.dart';
 import 'package:pantomias/l10n/l10n.dart';
-import 'package:pantomias/main.dart';
-import 'package:pantomias/shared/widgets/next_button.dart';
-import 'package:pantomias/ui/point_mode_settings/point_mode_settings_screen.dart';
-import 'package:pantomias/ui/point_mode_settings/point_mode_settings_view_model.dart';
+import 'package:pantomias/features/point_mode_settings/view/point_mode_settings_screen.dart';
+import 'package:pantomias/features/point_mode_settings/viewmodel/point_mode_settings_view_model.dart';
 import 'package:pantomias/shared/image_stage/image_deck_view_model.dart';
 import 'package:pantomias/shared/image_stage/image_stage.dart';
+import 'package:pantomias/shared/widgets/next_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

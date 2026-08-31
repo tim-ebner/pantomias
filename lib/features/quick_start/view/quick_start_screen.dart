@@ -3,7 +3,7 @@ import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/shared/widgets/next_button.dart';
 import 'package:pantomias/shared/image_stage/image_stage.dart';
 
-import 'quick_start_view_model.dart';
+import '../viewmodel/quick_start_view_model.dart';
 
 class QuickStartScreen extends StatelessWidget {
   const QuickStartScreen({super.key, required this.viewModel});

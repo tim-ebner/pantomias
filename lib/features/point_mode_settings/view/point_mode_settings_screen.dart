@@ -4,7 +4,7 @@ import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/shared/widgets/next_button.dart';
 import 'package:pantomias/shared/commons.dart';
 
-import 'point_mode_settings_view_model.dart';
+import '../viewmodel/point_mode_settings_view_model.dart';
 import 'widgets/player_name_field.dart';
 import 'widgets/point_mode_input_style.dart';
 

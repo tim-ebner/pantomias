@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../game_view_model.dart';
+import '../../viewmodel/game_view_model.dart';
 
 class ScoreBoard extends StatelessWidget {
   const ScoreBoard({

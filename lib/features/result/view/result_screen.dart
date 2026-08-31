@@ -5,7 +5,7 @@ import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/shared/widgets/next_button.dart';
 import 'package:pantomias/shared/commons.dart';
 
-import 'result_view_model.dart';
+import '../viewmodel/result_view_model.dart';
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen({
