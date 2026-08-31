@@ -13,10 +13,12 @@ class PointModeSettingsScreen extends StatelessWidget {
     super.key,
     required this.viewModel,
     required this.onStartGame,
+    required this.isKeyboardVisible,
   });
 
   final PointModeSettingsViewModel viewModel;
   final VoidCallback onStartGame;
+  final bool isKeyboardVisible;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,13 @@ class PointModeSettingsScreen extends StatelessWidget {
     return ListenableBuilder(
       listenable: viewModel,
       builder: (context, child) {
+        final startGameButton = NextButton(
+          key: const ValueKey('start-scored-game-button'),
+          icon: Icons.play_arrow_rounded,
+          label: l10n.startGameLabel,
+          labelMaxLines: 2,
+          onPressed: viewModel.canStartScoredGame ? onStartGame : null,
+        );
         final formContent = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -136,26 +145,30 @@ class PointModeSettingsScreen extends StatelessWidget {
                   horizontalPadding,
                   topPadding,
                   horizontalPadding,
-                  bottomPadding,
+                  isKeyboardVisible ? 0.0 : bottomPadding,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.only(bottom: 24.0),
-                        child: formContent,
+                        padding: EdgeInsets.only(
+                          bottom: isKeyboardVisible ? 0.0 : 24.0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            formContent,
+                            if (isKeyboardVisible) ...[
+                              const SizedBox(height: 24.0),
+                              startGameButton,
+                              const SizedBox(height: bottomPadding),
+                            ],
+                          ],
+                        ),
                       ),
                     ),
-                    NextButton(
-                      key: const ValueKey('start-scored-game-button'),
-                      icon: Icons.play_arrow_rounded,
-                      label: l10n.startGameLabel,
-                      labelMaxLines: 2,
-                      onPressed: viewModel.canStartScoredGame
-                          ? onStartGame
-                          : null,
-                    ),
+                    if (!isKeyboardVisible) startGameButton,
                   ],
                 ),
               ),

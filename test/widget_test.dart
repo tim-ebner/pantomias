@@ -7,6 +7,8 @@ import 'package:pantomias/data/model/turn_timeout_alert.dart';
 import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/main.dart';
 import 'package:pantomias/ui/home/widgets/next_button.dart';
+import 'package:pantomias/ui/point_mode_settings/point_mode_settings_screen.dart';
+import 'package:pantomias/ui/point_mode_settings/point_mode_settings_view_model.dart';
 import 'package:pantomias/ui/shared/image_stage/image_deck_view_model.dart';
 import 'package:pantomias/ui/shared/image_stage/image_stage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -96,6 +98,27 @@ void main() {
 
     expect(_startScoredGameButton(tester).onPressed, isNotNull);
   });
+
+  testWidgets(
+    'scored setup moves start button into the scroll area with keyboard',
+    (tester) async {
+      await _pumpPointModeSettingsScreen(tester);
+
+      final startButton = find.byKey(
+        const ValueKey('start-scored-game-button'),
+      );
+      final scrollAncestor = find.ancestor(
+        of: startButton,
+        matching: find.byType(SingleChildScrollView),
+      );
+
+      expect(scrollAncestor, findsNothing);
+
+      await _pumpPointModeSettingsScreen(tester, isKeyboardVisible: true);
+
+      expect(scrollAncestor, findsOneWidget);
+    },
+  );
 
   testWidgets('scored setup restores saved players, rounds, and time', (
     tester,
@@ -464,6 +487,36 @@ Future<void> _pumpImageStage(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(body: ImageStage(viewModel: viewModel)),
+    ),
+  );
+  await tester.pump();
+}
+
+Future<void> _pumpPointModeSettingsScreen(
+  WidgetTester tester, {
+  Locale locale = const Locale('de'),
+  bool isKeyboardVisible = false,
+}) async {
+  final settingsRepository = await _createSettingsRepository();
+  final viewModel = PointModeSettingsViewModel(
+    scoredGameSettingsRepository: settingsRepository,
+  );
+  addTearDown(viewModel.dispose);
+
+  await tester.pumpWidget(
+    MaterialApp(
+      locale: locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        body: SafeArea(
+          child: PointModeSettingsScreen(
+            viewModel: viewModel,
+            onStartGame: () {},
+            isKeyboardVisible: isKeyboardVisible,
+          ),
+        ),
+      ),
     ),
   );
   await tester.pump();

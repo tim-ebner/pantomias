@@ -82,13 +82,15 @@ class _HomePageState extends State<HomePage> {
                 ),
             ],
           ),
-          body: SafeArea(child: _buildBody()),
+          body: SafeArea(child: _buildBody(context)),
         );
       },
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
+    final isKeyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0.0;
+
     return switch (viewModel.screenState) {
       HomeScreenState.start => HomeScreen(
         onStartQuickStart: viewModel.startQuickStart,
@@ -100,6 +102,7 @@ class _HomePageState extends State<HomePage> {
       HomeScreenState.scoreSetup => PointModeSettingsScreen(
         viewModel: viewModel.pointModeSettingsViewModel,
         onStartGame: viewModel.startScoredGame,
+        isKeyboardVisible: isKeyboardVisible,
       ),
       HomeScreenState.scoreGame => GameScreen(
         viewModel: viewModel.gameViewModel,
