@@ -146,37 +146,31 @@ jobs:
           mkdir -p ~/private_keys
           echo "${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}" | base64 -d > ~/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
 
-      - name: Flutter build (unsigned)
-        run: |
-          flutter build ios --release --no-codesign \
-            --build-name=${{ needs.prepare.outputs.build_name }} \
-            --build-number=${{ needs.prepare.outputs.build_number }}
-
-      - name: Archive and export IPA
-        working-directory: ios
-        env:
-          PROFILE_NAME: ${{ steps.profile.outputs.name }}
-        run: |
-          xcodebuild archive \
-            -workspace Runner.xcworkspace \
-            -scheme Runner \
-            -configuration Release \
-            -destination 'generic/platform=iOS' \
-            -archivePath "$RUNNER_TEMP/Runner.xcarchive" \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
-            DEVELOPMENT_TEAM=X4TV7WVZ2F \
-            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME"
-
-          xcodebuild -exportArchive \
-            -archivePath "$RUNNER_TEMP/Runner.xcarchive" \
-            -exportPath "$GITHUB_WORKSPACE/build/ios/ipa" \
-            -exportOptionsPlist ExportOptions.plist
-
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
           working-directory: ios
+
+      - name: Configure manual signing (Runner target only)
+        working-directory: ios
+        env:
+          PROFILE_NAME: ${{ steps.profile.outputs.name }}
+        run: |
+          bundle exec fastlane run update_code_signing_settings \
+            path:"Runner.xcodeproj" \
+            use_automatic_signing:false \
+            team_id:"X4TV7WVZ2F" \
+            code_sign_identity:"Apple Distribution" \
+            profile_name:"$PROFILE_NAME" \
+            targets:"Runner" \
+            build_configurations:"Release"
+
+      - name: Build IPA
+        run: |
+          flutter build ipa --release \
+            --build-name=${{ needs.prepare.outputs.build_name }} \
+            --build-number=${{ needs.prepare.outputs.build_number }} \
+            --export-options-plist=ios/ExportOptions.plist
 
       - name: Upload to TestFlight
         working-directory: ios
