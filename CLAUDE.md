@@ -154,6 +154,28 @@ codebase would need few or no suppressions — not adopted yet.
 - Don't introduce a domain/use-case layer, Riverpod, GetIt, or other
   architecture not already decided above without checking first.
 
+## Design references
+
+- Only relevant when a task is design-driven (a new/redesigned screen,
+  a design handoff, "match the mockup") — skip this for pure
+  logic/refactor/test work.
+- UI/UX mockups live in a Claude Design project, not in this repo:
+  **"Pantomias activity app redesign"**
+  (project id `7eba88bc-d9c6-4e71-a32c-2d245fa78219`), owned by Tim
+  Ebner. It holds `.dc.html` artboards (e.g.
+  `Pantomias App Screens.dc.html`, `Pantomias Game Screen.dc.html`)
+  plus `design_handoff_*/` folders, each with a `README.md` and
+  `CLAUDE_CODE_PROMPT.md` describing one feature handoff and
+  reference screenshots.
+- Fetch it with the `DesignSync` tool (`claude_design` MCP):
+  `get_project`/`list_files` to see what exists, `get_file` to read a
+  specific `.dc.html` or handoff doc.
+- Treat mockups as visual/interaction reference only, never code to
+  port — recreate with this codebase's own Material widgets and
+  ViewModel patterns, and swap the mockup's inline hex values for the
+  matching tokens in `shared/commons.dart` (or feature-local style
+  files like `point_mode_input_style.dart`).
+
 ## Workflow / autonomy
 
 - Running `flutter analyze` and `flutter test`, and committing once
