@@ -5,7 +5,7 @@ import 'package:pantomias/features/result/viewmodel/result_view_model.dart';
 import 'package:pantomias/routing/route_args.dart';
 import 'package:pantomias/routing/routes.dart';
 import 'package:pantomias/shell/app_scaffold.dart';
-import 'package:pantomias/shell/home_action_button.dart';
+import 'package:pantomias/shell/home_icon_button.dart';
 
 class ResultPage extends StatefulWidget {
   const ResultPage({super.key, required this.outcome});
@@ -38,8 +38,15 @@ class _ResultPageState extends State<ResultPage> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: const AppTitle(),
-      actions: const [HomeActionButton()],
+      toolbarHeight: 64.0,
+      leadingWidth: 64.0,
+      showDivider: false,
+      leading: const Padding(
+        padding: EdgeInsets.only(left: 20.0),
+        child: HomeIconButton(),
+      ),
+      title: const SizedBox.shrink(),
+      actions: const [SizedBox(width: 64.0)],
       body: ResultScreen(viewModel: _viewModel, onRestartGame: _restartGame),
     );
   }
