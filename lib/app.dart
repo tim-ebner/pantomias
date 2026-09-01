@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pantomias/core/data/image_meta_info_repository.dart';
+import 'package:pantomias/core/data/image_show_history_repository.dart';
 import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 import 'package:pantomias/core/services/turn_timeout_alert.dart';
 import 'package:pantomias/l10n/l10n.dart';
@@ -11,11 +12,13 @@ class MyApp extends StatelessWidget {
   const MyApp({
     super.key,
     required this.scoredGameSettingsRepository,
+    required this.imageShowHistoryRepository,
     this.turnTimeoutAlert,
     this.locale,
   });
 
   final ScoredGameSettingsRepository scoredGameSettingsRepository;
+  final ImageShowHistoryRepository imageShowHistoryRepository;
   final TurnTimeoutAlert? turnTimeoutAlert;
   final Locale? locale;
 
@@ -26,6 +29,7 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider(create: (_) => ImageMetaInfoRepository()),
         Provider.value(value: scoredGameSettingsRepository),
+        Provider.value(value: imageShowHistoryRepository),
         Provider<TurnTimeoutAlert>(
           create: (_) => turnTimeoutAlert ?? AudioVibrationTurnTimeoutAlert(),
           dispose: (_, alert) => alert.dispose(),

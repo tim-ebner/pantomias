@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pantomias/core/data/image_meta_info_repository.dart';
+import 'package:pantomias/core/data/image_show_history_repository.dart';
 import 'package:pantomias/core/services/turn_timeout_alert.dart';
 import 'package:pantomias/features/game/view/game_screen.dart';
 import 'package:pantomias/features/game/viewmodel/game_view_model.dart';
@@ -30,6 +31,7 @@ class _GamePageState extends State<GamePage> {
     super.initState();
     _viewModel = GameViewModel(
       imageMetaInfoRepository: context.read<ImageMetaInfoRepository>(),
+      imageShowHistoryRepository: context.read<ImageShowHistoryRepository>(),
       turnTimeoutAlert: context.read<TurnTimeoutAlert>(),
     )..start(
       playerNames: widget.settings.playerNames,

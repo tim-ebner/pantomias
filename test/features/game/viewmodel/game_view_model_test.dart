@@ -2,20 +2,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pantomias/core/data/image_meta_info.dart';
 import 'package:pantomias/core/data/image_meta_info_repository.dart';
+import 'package:pantomias/core/data/image_show_history_repository.dart';
 import 'package:pantomias/core/services/turn_timeout_alert.dart';
 import 'package:pantomias/features/game/viewmodel/game_view_model.dart';
 
 class _MockImageMetaInfoRepository extends Mock
     implements ImageMetaInfoRepository {}
 
+class _MockImageShowHistoryRepository extends Mock
+    implements ImageShowHistoryRepository {}
+
 class _MockTurnTimeoutAlert extends Mock implements TurnTimeoutAlert {}
 
 void main() {
   late _MockImageMetaInfoRepository imageMetaInfoRepository;
+  late _MockImageShowHistoryRepository imageShowHistoryRepository;
   late _MockTurnTimeoutAlert turnTimeoutAlert;
 
   setUp(() {
     imageMetaInfoRepository = _MockImageMetaInfoRepository();
+    imageShowHistoryRepository = _MockImageShowHistoryRepository();
     turnTimeoutAlert = _MockTurnTimeoutAlert();
     when(() => imageMetaInfoRepository.getAllImageMetaInfo()).thenAnswer(
       (_) => [
@@ -23,11 +29,16 @@ void main() {
         const ImageMetaInfo(promptId: 'dog', imageUrl: 'dog.webp'),
       ],
     );
+    when(() => imageShowHistoryRepository.loadShowCounts()).thenReturn({});
+    when(
+      () => imageShowHistoryRepository.recordShown(any()),
+    ).thenAnswer((_) async {});
   });
 
   GameViewModel createViewModel() {
     final viewModel = GameViewModel(
       imageMetaInfoRepository: imageMetaInfoRepository,
+      imageShowHistoryRepository: imageShowHistoryRepository,
       turnTimeoutAlert: turnTimeoutAlert,
     );
     addTearDown(viewModel.dispose);

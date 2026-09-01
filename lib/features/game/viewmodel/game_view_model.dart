@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:pantomias/core/data/image_meta_info_repository.dart';
+import 'package:pantomias/core/data/image_show_history_repository.dart';
 import 'package:pantomias/core/services/turn_timeout_alert.dart';
 
 import 'package:pantomias/shared/image_stage/image_deck_view_model.dart';
@@ -16,10 +17,12 @@ class PlayerScore {
 class GameViewModel extends ChangeNotifier {
   GameViewModel({
     required ImageMetaInfoRepository imageMetaInfoRepository,
+    required ImageShowHistoryRepository imageShowHistoryRepository,
     required TurnTimeoutAlert turnTimeoutAlert,
   }) : _turnTimeoutAlert = turnTimeoutAlert,
        imageDeckViewModel = ImageDeckViewModel(
          imageMetaInfoRepository: imageMetaInfoRepository,
+         imageShowHistoryRepository: imageShowHistoryRepository,
        );
 
   final TurnTimeoutAlert _turnTimeoutAlert;

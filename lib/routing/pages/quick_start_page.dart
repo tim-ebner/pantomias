@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pantomias/core/data/image_meta_info_repository.dart';
+import 'package:pantomias/core/data/image_show_history_repository.dart';
 import 'package:pantomias/features/quick_start/view/quick_start_screen.dart';
 import 'package:pantomias/features/quick_start/viewmodel/quick_start_view_model.dart';
 import 'package:pantomias/l10n/l10n.dart';
@@ -23,6 +24,7 @@ class _QuickStartPageState extends State<QuickStartPage> {
     super.initState();
     _viewModel = QuickStartViewModel(
       imageMetaInfoRepository: context.read<ImageMetaInfoRepository>(),
+      imageShowHistoryRepository: context.read<ImageShowHistoryRepository>(),
     )..start();
   }
 

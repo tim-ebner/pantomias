@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantomias/app.dart';
+import 'package:pantomias/core/data/image_show_history_repository.dart';
 import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 import 'package:pantomias/core/services/turn_timeout_alert.dart';
 import 'package:pantomias/l10n/l10n.dart';
@@ -453,9 +454,12 @@ Future<void> _pumpApp(
     );
   }
 
+  final imageShowHistoryRepository = await _createImageShowHistoryRepository();
+
   await tester.pumpWidget(
     MyApp(
       scoredGameSettingsRepository: settingsRepository,
+      imageShowHistoryRepository: imageShowHistoryRepository,
       turnTimeoutAlert: turnTimeoutAlert,
       locale: locale,
     ),
@@ -497,6 +501,11 @@ Future<ScoredGameSettingsRepository> _createSettingsRepository() async {
   SharedPreferences.setMockInitialValues({});
   final preferences = await SharedPreferences.getInstance();
   return ScoredGameSettingsRepository(preferences: preferences);
+}
+
+Future<ImageShowHistoryRepository> _createImageShowHistoryRepository() async {
+  final preferences = await SharedPreferences.getInstance();
+  return ImageShowHistoryRepository(preferences: preferences);
 }
 
 Future<void> _openScoredSetup(
