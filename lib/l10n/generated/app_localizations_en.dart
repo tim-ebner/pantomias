@@ -529,4 +529,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get promptZebra => 'Zebra';
+
+  @override
+  String get promptAstronaut => 'Astronaut';
+
+  @override
+  String get promptCandle => 'Candle';
+
+  @override
+  String get promptChef => 'Chef';
+
+  @override
+  String get promptFirefighter => 'Firefighter';
+
+  @override
+  String get promptFlamingo => 'Flamingo';
+
+  @override
+  String get promptGhost => 'Ghost';
+
+  @override
+  String get promptHippo => 'Hippo';
+
+  @override
+  String get promptJumping => 'Jumping';
+
+  @override
+  String get promptKangaroo => 'Kangaroo';
+
+  @override
+  String get promptKite => 'Kite';
+
+  @override
+  String get promptKoala => 'Koala';
+
+  @override
+  String get promptMermaid => 'Mermaid';
+
+  @override
+  String get promptOctopus => 'Octopus';
+
+  @override
+  String get promptRaccoon => 'Raccoon';
+
+  @override
+  String get promptRobot => 'Robot';
+
+  @override
+  String get promptSwimming => 'Swimming';
+
+  @override
+  String get promptTrumpet => 'Trumpet';
+
+  @override
+  String get promptViolin => 'Violin';
+
+  @override
+  String get promptWitch => 'Witch';
 }

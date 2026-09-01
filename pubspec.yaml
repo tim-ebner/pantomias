@@ -192,6 +192,25 @@ flutter:
     - assets/images/pants/whale.webp
     - assets/images/pants/wolf.webp
     - assets/images/pants/zebra.webp
+    - assets/images/pants/astronaut.webp
+    - assets/images/pants/candle.webp
+    - assets/images/pants/chef.webp
+    - assets/images/pants/firefighter.webp
+    - assets/images/pants/flamingo.webp
+    - assets/images/pants/ghost.webp
+    - assets/images/pants/hippo.webp
+    - assets/images/pants/jumping.webp
+    - assets/images/pants/kangaroo.webp
+    - assets/images/pants/kite.webp
+    - assets/images/pants/koala.webp
+    - assets/images/pants/mermaid.webp
+    - assets/images/pants/octopus.webp
+    - assets/images/pants/raccoon.webp
+    - assets/images/pants/robot.webp
+    - assets/images/pants/swimming.webp
+    - assets/images/pants/trumpet.webp
+    - assets/images/pants/violin.webp
+    - assets/images/pants/witch.webp
 
 
   # To add assets to your application, add an assets section, like this:

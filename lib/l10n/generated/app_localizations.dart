@@ -1105,6 +1105,120 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Zebra'**
   String get promptZebra;
+
+  /// No description provided for @promptAstronaut.
+  ///
+  /// In de, this message translates to:
+  /// **'Astronaut'**
+  String get promptAstronaut;
+
+  /// No description provided for @promptCandle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kerze'**
+  String get promptCandle;
+
+  /// No description provided for @promptChef.
+  ///
+  /// In de, this message translates to:
+  /// **'Koch'**
+  String get promptChef;
+
+  /// No description provided for @promptFirefighter.
+  ///
+  /// In de, this message translates to:
+  /// **'Feuerwehrmann'**
+  String get promptFirefighter;
+
+  /// No description provided for @promptFlamingo.
+  ///
+  /// In de, this message translates to:
+  /// **'Flamingo'**
+  String get promptFlamingo;
+
+  /// No description provided for @promptGhost.
+  ///
+  /// In de, this message translates to:
+  /// **'Geist'**
+  String get promptGhost;
+
+  /// No description provided for @promptHippo.
+  ///
+  /// In de, this message translates to:
+  /// **'Nilpferd'**
+  String get promptHippo;
+
+  /// No description provided for @promptJumping.
+  ///
+  /// In de, this message translates to:
+  /// **'Springen'**
+  String get promptJumping;
+
+  /// No description provided for @promptKangaroo.
+  ///
+  /// In de, this message translates to:
+  /// **'Känguru'**
+  String get promptKangaroo;
+
+  /// No description provided for @promptKite.
+  ///
+  /// In de, this message translates to:
+  /// **'Drachen'**
+  String get promptKite;
+
+  /// No description provided for @promptKoala.
+  ///
+  /// In de, this message translates to:
+  /// **'Koala'**
+  String get promptKoala;
+
+  /// No description provided for @promptMermaid.
+  ///
+  /// In de, this message translates to:
+  /// **'Meerjungfrau'**
+  String get promptMermaid;
+
+  /// No description provided for @promptOctopus.
+  ///
+  /// In de, this message translates to:
+  /// **'Oktopus'**
+  String get promptOctopus;
+
+  /// No description provided for @promptRaccoon.
+  ///
+  /// In de, this message translates to:
+  /// **'Waschbär'**
+  String get promptRaccoon;
+
+  /// No description provided for @promptRobot.
+  ///
+  /// In de, this message translates to:
+  /// **'Roboter'**
+  String get promptRobot;
+
+  /// No description provided for @promptSwimming.
+  ///
+  /// In de, this message translates to:
+  /// **'Schwimmen'**
+  String get promptSwimming;
+
+  /// No description provided for @promptTrumpet.
+  ///
+  /// In de, this message translates to:
+  /// **'Trompete'**
+  String get promptTrumpet;
+
+  /// No description provided for @promptViolin.
+  ///
+  /// In de, this message translates to:
+  /// **'Geige'**
+  String get promptViolin;
+
+  /// No description provided for @promptWitch.
+  ///
+  /// In de, this message translates to:
+  /// **'Hexe'**
+  String get promptWitch;
 }
 
 class _AppLocalizationsDelegate
