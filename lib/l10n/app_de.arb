@@ -87,6 +87,9 @@
     "placeholders": {
       "rank": {
         "type": "int"
+      },
+      "ordinalSuffix": {
+        "type": "String"
       }
     }
   },

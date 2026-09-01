@@ -393,7 +393,7 @@ void main() {
     expect(find.text('1 pt'), findsOneWidget);
     expect(find.text('0 pts'), findsOneWidget);
     expect(find.text('1ST PLACE'), findsOneWidget);
-    expect(find.text('2. place'), findsOneWidget);
+    expect(find.text('2nd place'), findsOneWidget);
     expect(find.text('New Points Game'), findsOneWidget);
   });
 

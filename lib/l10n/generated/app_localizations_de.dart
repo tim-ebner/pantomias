@@ -159,7 +159,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get winnerBadgeLabel => '1. PLATZ';
 
   @override
-  String rankLabel(int rank) {
+  String rankLabel(int rank, String ordinalSuffix) {
     return '$rank. Platz';
   }
 

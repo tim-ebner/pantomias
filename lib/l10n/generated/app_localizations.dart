@@ -366,7 +366,7 @@ abstract class AppLocalizations {
   ///
   /// In de, this message translates to:
   /// **'{rank}. Platz'**
-  String rankLabel(int rank);
+  String rankLabel(int rank, String ordinalSuffix);
 
   /// No description provided for @promptCat.
   ///

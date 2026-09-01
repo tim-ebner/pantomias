@@ -382,7 +382,7 @@ class _RankedPlayerCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5.0),
                 Text(
-                  context.l10n.rankLabel(rank),
+                  context.l10n.rankLabel(rank, _ordinalSuffix(rank)),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -412,5 +412,23 @@ class _RankedPlayerCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// English ordinal suffix for [rank] (e.g. 2 -> "nd", 11 -> "th"); ignored by
+/// locales whose `rankLabel` translation doesn't reference it.
+String _ordinalSuffix(int rank) {
+  if (rank % 100 >= 11 && rank % 100 <= 13) {
+    return 'th';
+  }
+  switch (rank % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
   }
 }

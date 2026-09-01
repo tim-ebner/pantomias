@@ -157,8 +157,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get winnerBadgeLabel => '1ST PLACE';
 
   @override
-  String rankLabel(int rank) {
-    return '$rank. place';
+  String rankLabel(int rank, String ordinalSuffix) {
+    return '$rank$ordinalSuffix place';
   }
 
   @override

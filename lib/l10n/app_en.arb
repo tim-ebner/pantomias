@@ -82,11 +82,14 @@
   "winnerPraise5": "Delivered!",
   "winnerPraise6": "Boom!",
   "winnerBadgeLabel": "1ST PLACE",
-  "rankLabel": "{rank}. place",
+  "rankLabel": "{rank}{ordinalSuffix} place",
   "@rankLabel": {
     "placeholders": {
       "rank": {
         "type": "int"
+      },
+      "ordinalSuffix": {
+        "type": "String"
       }
     }
   },
