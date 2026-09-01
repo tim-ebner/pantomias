@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:pantomias/core/data/game_mode.dart';
 import 'package:pantomias/core/data/image_meta_info_repository.dart';
 import 'package:pantomias/core/data/image_show_history_repository.dart';
 import 'package:pantomias/core/services/turn_timeout_alert.dart';
@@ -35,6 +36,9 @@ class GameViewModel extends ChangeNotifier {
   int get activePlayerIndex => _activePlayerIndex;
   PlayerScore? get activePlayer =>
       _players.isEmpty ? null : _players[_activePlayerIndex];
+
+  GameMode _gameMode = GameMode.winnerNext;
+  GameMode get gameMode => _gameMode;
 
   int _completedTurns = 0;
   int get completedTurns => _completedTurns;
@@ -74,6 +78,7 @@ class GameViewModel extends ChangeNotifier {
     required List<String> playerNames,
     required int? roundLimit,
     required Duration? turnTimeLimit,
+    required GameMode gameMode,
   }) {
     _turnTimer?.cancel();
     _players = playerNames
@@ -83,6 +88,7 @@ class GameViewModel extends ChangeNotifier {
     _completedTurns = 0;
     _roundLimit = roundLimit;
     _turnTimeLimit = turnTimeLimit;
+    _gameMode = gameMode;
     imageDeckViewModel.start();
     _resetTurnTimer();
     notifyListeners();
@@ -98,6 +104,7 @@ class GameViewModel extends ChangeNotifier {
       playerNames: playerNames,
       roundLimit: _roundLimit,
       turnTimeLimit: _turnTimeLimit,
+      gameMode: _gameMode,
     );
   }
 
@@ -110,7 +117,7 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool completeTurn({required bool wasGuessed}) {
+  bool completeTurn({required bool wasGuessed, int? guesserIndex}) {
     if (_players.isEmpty) {
       return false;
     }
@@ -118,14 +125,27 @@ class GameViewModel extends ChangeNotifier {
     _turnTimer?.cancel();
     _turnTimer = null;
 
+    var nextActivePlayerIndex = (_activePlayerIndex + 1) % _players.length;
+
     if (wasGuessed) {
-      _players[_activePlayerIndex].score += 1;
+      if (_gameMode == GameMode.winnerNext) {
+        final resolvedGuesserIndex =
+            guesserIndex != null &&
+                guesserIndex >= 0 &&
+                guesserIndex < _players.length
+            ? guesserIndex
+            : _activePlayerIndex;
+        _players[resolvedGuesserIndex].score += 1;
+        nextActivePlayerIndex = resolvedGuesserIndex;
+      } else {
+        _players[_activePlayerIndex].score += 1;
+      }
     }
 
     _completedTurns += 1;
     final isFinished = _roundLimit != null && _completedTurns >= totalTurns!;
     if (!isFinished) {
-      _activePlayerIndex = (_activePlayerIndex + 1) % _players.length;
+      _activePlayerIndex = nextActivePlayerIndex;
       imageDeckViewModel.nextImage(revealImage: true);
       _resetTurnTimer();
     } else {

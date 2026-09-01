@@ -51,6 +51,12 @@
     }
   },
   "removePlayerTooltip": "Spieler entfernen",
+  "gameModeSectionLabel": "Spielmodus",
+  "winnerNextModeLabel": "Wer gewinnt, ist dran",
+  "winnerNextModeDescription": "Rateperson pantomimiert als Nächstes",
+  "sequenceModeLabel": "Reihenfolge",
+  "sequenceModeDescription": "Spieler wechseln sich der Reihe nach ab",
+  "whoGuessedLabel": "Wer hat's erraten?",
   "roundsOptionalLabel": "Runden (optional)",
   "positiveRoundsError": "Bitte positive Rundenzahl eingeben",
   "timeOptionalLabel": "Zeit (Min:Sek, optional)",

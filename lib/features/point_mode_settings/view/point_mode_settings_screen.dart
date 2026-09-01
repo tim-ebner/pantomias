@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pantomias/core/data/game_mode.dart';
 import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/shared/widgets/next_button.dart';
 import 'package:pantomias/shared/commons.dart';
 
 import '../viewmodel/point_mode_settings_view_model.dart';
+import 'widgets/game_mode_card.dart';
 import 'widgets/player_name_field.dart';
 import 'widgets/point_mode_input_style.dart';
 
@@ -70,6 +72,31 @@ class PointModeSettingsScreen extends StatelessWidget {
                 icon: const Icon(Icons.add, size: 20.0),
                 label: Text(l10n.addPlayerLabel),
               ),
+            ),
+            const SizedBox(height: 12.0),
+            Text(
+              l10n.gameModeSectionLabel,
+              style: const TextStyle(
+                fontSize: 13.0,
+                fontWeight: FontWeight.w800,
+                color: pointModeLabelColor,
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            GameModeCard(
+              key: const ValueKey('game-mode-winner-next-card'),
+              label: l10n.winnerNextModeLabel,
+              description: l10n.winnerNextModeDescription,
+              isSelected: viewModel.gameMode == GameMode.winnerNext,
+              onTap: () => viewModel.selectGameMode(GameMode.winnerNext),
+            ),
+            const SizedBox(height: 8.0),
+            GameModeCard(
+              key: const ValueKey('game-mode-sequence-card'),
+              label: l10n.sequenceModeLabel,
+              description: l10n.sequenceModeDescription,
+              isSelected: viewModel.gameMode == GameMode.sequence,
+              onTap: () => viewModel.selectGameMode(GameMode.sequence),
             ),
             const SizedBox(height: 16.0),
             LayoutBuilder(

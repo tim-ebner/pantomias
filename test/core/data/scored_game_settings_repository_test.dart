@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pantomias/core/data/game_mode.dart';
 import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,6 +16,19 @@ void main() {
     expect(repository.loadPlayerNames(), isEmpty);
     expect(repository.loadRoundLimitText(), '');
     expect(repository.loadTurnTimeLimitText(), '');
+    expect(repository.loadGameMode(), GameMode.winnerNext);
+  });
+
+  test('saveGameMode persists the chosen mode for later loads', () async {
+    final repository = await createRepository();
+
+    await repository.saveGameMode(GameMode.sequence);
+
+    expect(repository.loadGameMode(), GameMode.sequence);
+
+    await repository.saveGameMode(GameMode.winnerNext);
+
+    expect(repository.loadGameMode(), GameMode.winnerNext);
   });
 
   test('save persists player names and limits for later loads', () async {

@@ -17,6 +17,7 @@ class StageCard extends StatelessWidget {
     required this.imageAssetPath,
     required this.feedback,
     required this.onTap,
+    this.overlay,
   });
 
   final bool isRevealed;
@@ -24,6 +25,10 @@ class StageCard extends StatelessWidget {
   final String? imageAssetPath;
   final StageFeedback? feedback;
   final VoidCallback? onTap;
+
+  /// Painted above everything else, including the feedback overlay — used
+  /// for transient in-stage UI like the winner-next guesser chooser.
+  final Widget? overlay;
 
   static const _borderRadius = 36.0;
   static const _borderWidth = 5.0;
@@ -54,9 +59,7 @@ class StageCard extends StatelessWidget {
           // *inner* radius instead, matching the content Container already
           // insets by _borderWidth.
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(
-              _borderRadius - _borderWidth,
-            ),
+            borderRadius: BorderRadius.circular(_borderRadius - _borderWidth),
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -72,6 +75,7 @@ class StageCard extends StatelessWidget {
                     child: _FeedbackOverlay(feedback: feedback!),
                   ),
                 _ConfettiLayer(feedback: feedback),
+                if (overlay != null) overlay!,
               ],
             ),
           ),
@@ -366,10 +370,7 @@ class _ConfettiLayerState extends State<_ConfettiLayer>
       final distance = 70.0 + (i % 3) * 20.0;
       return _ConfettiParticle(
         color: _colors[i % _colors.length],
-        target: Offset(
-          math.cos(angle) * distance,
-          math.sin(angle) * distance,
-        ),
+        target: Offset(math.cos(angle) * distance, math.sin(angle) * distance),
       );
     });
     _active = true;
@@ -393,8 +394,10 @@ class _ConfettiLayerState extends State<_ConfettiLayer>
         animation: _controller,
         builder: (context, child) {
           final t = _controller.value;
-          final opacity = (t < 0.15 ? t / 0.15 : 1.0 - (t - 0.15) / 0.85)
-              .clamp(0.0, 1.0);
+          final opacity = (t < 0.15 ? t / 0.15 : 1.0 - (t - 0.15) / 0.85).clamp(
+            0.0,
+            1.0,
+          );
           return Stack(
             children: [
               for (final particle in _particles)

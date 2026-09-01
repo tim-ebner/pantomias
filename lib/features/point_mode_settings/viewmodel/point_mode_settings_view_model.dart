@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:pantomias/core/data/game_mode.dart';
 import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 
 class SetupPlayerDraft {
@@ -15,11 +16,13 @@ class PointModeSettings {
     required this.playerNames,
     required this.roundLimit,
     required this.turnTimeLimit,
+    required this.gameMode,
   });
 
   final List<String> playerNames;
   final int? roundLimit;
   final Duration? turnTimeLimit;
+  final GameMode gameMode;
 }
 
 class PointModeSettingsViewModel extends ChangeNotifier {
@@ -41,6 +44,9 @@ class PointModeSettingsViewModel extends ChangeNotifier {
 
   String _turnTimeLimitText = '';
   String get turnTimeLimitText => _turnTimeLimitText;
+
+  GameMode _gameMode = GameMode.winnerNext;
+  GameMode get gameMode => _gameMode;
 
   bool get canRemoveSetupPlayer => _setupPlayers.length > 2;
 
@@ -114,6 +120,11 @@ class PointModeSettingsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void selectGameMode(GameMode mode) {
+    _gameMode = mode;
+    notifyListeners();
+  }
+
   void updateTurnTimeLimit(String turnTimeLimit) {
     _turnTimeLimitText = turnTimeLimit;
     notifyListeners();
@@ -157,6 +168,7 @@ class PointModeSettingsViewModel extends ChangeNotifier {
       playerNames: List.unmodifiable(_validSetupPlayerNames),
       roundLimit: _parseRoundLimit(),
       turnTimeLimit: _parseTurnTimeLimit(),
+      gameMode: _gameMode,
     );
   }
 
@@ -168,6 +180,7 @@ class PointModeSettingsViewModel extends ChangeNotifier {
         turnTimeLimitText: _turnTimeLimitText.trim(),
       ),
     );
+    unawaited(_scoredGameSettingsRepository.saveGameMode(_gameMode));
   }
 
   List<String> get _validSetupPlayerNames {
@@ -192,6 +205,7 @@ class PointModeSettingsViewModel extends ChangeNotifier {
         : [_createSetupPlayer(), _createSetupPlayer()];
     _roundLimitText = _scoredGameSettingsRepository.loadRoundLimitText();
     _turnTimeLimitText = _scoredGameSettingsRepository.loadTurnTimeLimitText();
+    _gameMode = _scoredGameSettingsRepository.loadGameMode();
   }
 
   SetupPlayerDraft _createSetupPlayer({String name = ''}) {

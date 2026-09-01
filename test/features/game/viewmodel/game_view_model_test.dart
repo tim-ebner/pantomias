@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pantomias/core/data/game_mode.dart';
 import 'package:pantomias/core/data/image_meta_info.dart';
 import 'package:pantomias/core/data/image_meta_info_repository.dart';
 import 'package:pantomias/core/data/image_show_history_repository.dart';
@@ -52,6 +53,7 @@ void main() {
       playerNames: ['Alice', 'Bob'],
       roundLimit: 2,
       turnTimeLimit: null,
+      gameMode: GameMode.sequence,
     );
 
     expect(viewModel.players.map((p) => p.name), ['Alice', 'Bob']);
@@ -67,6 +69,7 @@ void main() {
       playerNames: ['Alice', 'Bob'],
       roundLimit: null,
       turnTimeLimit: null,
+      gameMode: GameMode.sequence,
     );
 
     viewModel.completeTurn(wasGuessed: true);
@@ -86,6 +89,7 @@ void main() {
       playerNames: ['Alice', 'Bob', 'Cara'],
       roundLimit: null,
       turnTimeLimit: null,
+      gameMode: GameMode.sequence,
     );
 
     viewModel.completeTurn(wasGuessed: false);
@@ -103,6 +107,7 @@ void main() {
       playerNames: ['Alice', 'Bob'],
       roundLimit: 1,
       turnTimeLimit: null,
+      gameMode: GameMode.sequence,
     );
 
     expect(viewModel.completeTurn(wasGuessed: true), isFalse);
@@ -115,6 +120,7 @@ void main() {
       playerNames: ['Alice', 'Bob', 'Cara'],
       roundLimit: null,
       turnTimeLimit: null,
+      gameMode: GameMode.sequence,
     );
 
     viewModel.completeTurn(wasGuessed: false); // Alice: 0
@@ -135,26 +141,87 @@ void main() {
       playerNames: ['Alice', 'Bob'],
       roundLimit: 1,
       turnTimeLimit: null,
+      gameMode: GameMode.sequence,
     );
 
     expect(viewModel.canRestart, isTrue);
   });
 
-  test('restart resets scores and turns while keeping players and settings', () {
-    final viewModel = createViewModel();
-    viewModel.start(
-      playerNames: ['Alice', 'Bob'],
-      roundLimit: 2,
-      turnTimeLimit: null,
-    );
-    viewModel.completeTurn(wasGuessed: true);
+  test(
+    'restart resets scores and turns while keeping players and settings',
+    () {
+      final viewModel = createViewModel();
+      viewModel.start(
+        playerNames: ['Alice', 'Bob'],
+        roundLimit: 2,
+        turnTimeLimit: null,
+        gameMode: GameMode.sequence,
+      );
+      viewModel.completeTurn(wasGuessed: true);
 
-    viewModel.restart();
+      viewModel.restart();
 
-    expect(viewModel.players.map((p) => p.name), ['Alice', 'Bob']);
-    expect(viewModel.players.every((p) => p.score == 0), isTrue);
-    expect(viewModel.activePlayer?.name, 'Alice');
-    expect(viewModel.completedTurns, 0);
-    expect(viewModel.roundLimit, 2);
+      expect(viewModel.players.map((p) => p.name), ['Alice', 'Bob']);
+      expect(viewModel.players.every((p) => p.score == 0), isTrue);
+      expect(viewModel.activePlayer?.name, 'Alice');
+      expect(viewModel.completedTurns, 0);
+      expect(viewModel.roundLimit, 2);
+    },
+  );
+
+  group('winnerNext mode', () {
+    test('completeTurn awards the point to the chosen guesser and makes them '
+        'active', () {
+      final viewModel = createViewModel();
+      viewModel.start(
+        playerNames: ['Alice', 'Bob', 'Cara'],
+        roundLimit: null,
+        turnTimeLimit: null,
+        gameMode: GameMode.winnerNext,
+      );
+
+      viewModel.completeTurn(wasGuessed: true, guesserIndex: 2);
+
+      expect(viewModel.players[2].score, 1);
+      expect(viewModel.players[0].score, 0);
+      expect(viewModel.players[1].score, 0);
+      expect(viewModel.activePlayer?.name, 'Cara');
+    });
+
+    test('completeTurn falls back to the active player when guesserIndex is '
+        'missing or out of range', () {
+      final viewModel = createViewModel();
+      viewModel.start(
+        playerNames: ['Alice', 'Bob'],
+        roundLimit: null,
+        turnTimeLimit: null,
+        gameMode: GameMode.winnerNext,
+      );
+
+      viewModel.completeTurn(wasGuessed: true);
+
+      expect(viewModel.players.first.score, 1);
+      expect(viewModel.activePlayer?.name, 'Alice');
+
+      viewModel.completeTurn(wasGuessed: true, guesserIndex: 99);
+
+      expect(viewModel.activePlayer?.name, 'Alice');
+      expect(viewModel.players.first.score, 2);
+    });
+
+    test('completeTurn without a guess still rotates to the next player', () {
+      final viewModel = createViewModel();
+      viewModel.start(
+        playerNames: ['Alice', 'Bob', 'Cara'],
+        roundLimit: null,
+        turnTimeLimit: null,
+        gameMode: GameMode.winnerNext,
+      );
+
+      viewModel.completeTurn(wasGuessed: false);
+
+      expect(viewModel.activePlayer?.name, 'Bob');
+      expect(viewModel.players.every((p) => p.score == 0), isTrue);
+    });
   });
 }

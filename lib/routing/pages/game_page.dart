@@ -29,15 +29,18 @@ class _GamePageState extends State<GamePage> {
   @override
   void initState() {
     super.initState();
-    _viewModel = GameViewModel(
-      imageMetaInfoRepository: context.read<ImageMetaInfoRepository>(),
-      imageShowHistoryRepository: context.read<ImageShowHistoryRepository>(),
-      turnTimeoutAlert: context.read<TurnTimeoutAlert>(),
-    )..start(
-      playerNames: widget.settings.playerNames,
-      roundLimit: widget.settings.roundLimit,
-      turnTimeLimit: widget.settings.turnTimeLimit,
-    );
+    _viewModel =
+        GameViewModel(
+          imageMetaInfoRepository: context.read<ImageMetaInfoRepository>(),
+          imageShowHistoryRepository: context
+              .read<ImageShowHistoryRepository>(),
+          turnTimeoutAlert: context.read<TurnTimeoutAlert>(),
+        )..start(
+          playerNames: widget.settings.playerNames,
+          roundLimit: widget.settings.roundLimit,
+          turnTimeLimit: widget.settings.turnTimeLimit,
+          gameMode: widget.settings.gameMode,
+        );
   }
 
   @override
@@ -46,8 +49,11 @@ class _GamePageState extends State<GamePage> {
     super.dispose();
   }
 
-  void _completeTurn({required bool wasGuessed}) {
-    final isFinished = _viewModel.completeTurn(wasGuessed: wasGuessed);
+  void _completeTurn({required bool wasGuessed, int? guesserIndex}) {
+    final isFinished = _viewModel.completeTurn(
+      wasGuessed: wasGuessed,
+      guesserIndex: guesserIndex,
+    );
     if (isFinished) {
       context.go(
         Routes.result,
@@ -84,7 +90,8 @@ class _GamePageState extends State<GamePage> {
           actions: const [SizedBox(width: 64.0)],
           body: GameScreen(
             viewModel: _viewModel,
-            onGuessed: () => _completeTurn(wasGuessed: true),
+            onGuessed: ({guesserIndex}) =>
+                _completeTurn(wasGuessed: true, guesserIndex: guesserIndex),
             onNotGuessed: () => _completeTurn(wasGuessed: false),
           ),
         );

@@ -77,6 +77,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String get removePlayerTooltip => 'Spieler entfernen';
 
   @override
+  String get gameModeSectionLabel => 'Spielmodus';
+
+  @override
+  String get winnerNextModeLabel => 'Wer gewinnt, ist dran';
+
+  @override
+  String get winnerNextModeDescription =>
+      'Rateperson pantomimiert als Nächstes';
+
+  @override
+  String get sequenceModeLabel => 'Reihenfolge';
+
+  @override
+  String get sequenceModeDescription =>
+      'Spieler wechseln sich der Reihe nach ab';
+
+  @override
+  String get whoGuessedLabel => 'Wer hat\'s erraten?';
+
+  @override
   String get roundsOptionalLabel => 'Runden (optional)';
 
   @override

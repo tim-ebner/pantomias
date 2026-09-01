@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantomias/app.dart';
+import 'package:pantomias/core/data/game_mode.dart';
 import 'package:pantomias/core/data/image_show_history_repository.dart';
 import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 import 'package:pantomias/core/services/turn_timeout_alert.dart';
@@ -16,7 +17,8 @@ void main() {
     // animations (active player glow, timer urgency pulse). Those never let
     // pumpAndSettle() settle, so tests opt into reduce-motion like a real
     // accessibility user would.
-    TestWidgetsFlutterBinding.ensureInitialized().platformDispatcher
+    TestWidgetsFlutterBinding.ensureInitialized()
+        .platformDispatcher
         .accessibilityFeaturesTestValue = const FakeAccessibilityFeatures(
       disableAnimations: true,
     );
@@ -211,6 +213,37 @@ void main() {
       expect(_activePlayer('Bob'), findsOneWidget);
       expect(_scoreText(tester, 0), '1');
       expect(_scoreText(tester, 1), '0');
+    },
+  );
+
+  testWidgets('scored setup shows both game mode cards', (tester) async {
+    await _openScoredSetup(tester);
+
+    expect(find.text('Wer gewinnt, ist dran'), findsOneWidget);
+    expect(find.text('Reihenfolge'), findsOneWidget);
+  });
+
+  testWidgets(
+    'winnerNext mode (the default) shows a guesser chooser and awards the '
+    'point to the chosen player',
+    (tester) async {
+      await _startScoredGame(tester, gameMode: GameMode.winnerNext);
+
+      expect(_activePlayer('Alice'), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('guessed-button')));
+      await tester.pump();
+
+      expect(find.text("Wer hat's erraten?"), findsOneWidget);
+      expect(find.byKey(const ValueKey('guesser-option-0')), findsNothing);
+      expect(find.byKey(const ValueKey('guesser-option-1')), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('guesser-option-1')));
+      await tester.pumpAndSettle();
+
+      expect(_activePlayer('Bob'), findsOneWidget);
+      expect(_scoreText(tester, 0), '0');
+      expect(_scoreText(tester, 1), '1');
     },
   );
 
@@ -524,6 +557,13 @@ Future<void> _startScoredGame(
   String? time,
   TurnTimeoutAlert? turnTimeoutAlert,
   Locale locale = const Locale('de'),
+  // The existing generic-mechanics tests (rounds, timer, results,
+  // persistence, ...) were all written against the sole pre-existing mode
+  // (plain rotation) and tap 'guessed-button' expecting it to score the
+  // active player and rotate instantly. Defaulting this helper to
+  // GameMode.sequence keeps that behavior/coverage without touching every
+  // call site; winnerNext-specific tests opt in explicitly.
+  GameMode gameMode = GameMode.sequence,
 }) async {
   await _startScoredGameWithPlayers(
     tester,
@@ -532,6 +572,7 @@ Future<void> _startScoredGame(
     time: time,
     turnTimeoutAlert: turnTimeoutAlert,
     locale: locale,
+    gameMode: gameMode,
   );
 }
 
@@ -542,6 +583,7 @@ Future<void> _startScoredGameWithPlayers(
   String? time,
   TurnTimeoutAlert? turnTimeoutAlert,
   Locale locale = const Locale('de'),
+  GameMode gameMode = GameMode.sequence,
 }) async {
   await _openScoredSetup(
     tester,
@@ -576,6 +618,13 @@ Future<void> _startScoredGameWithPlayers(
       time,
     );
     await tester.pump();
+  }
+
+  if (gameMode == GameMode.sequence) {
+    await _tapWhenVisible(
+      tester,
+      find.byKey(const ValueKey('game-mode-sequence-card')),
+    );
   }
 
   await _tapWhenVisible(

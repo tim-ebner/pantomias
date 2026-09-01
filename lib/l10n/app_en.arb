@@ -51,6 +51,12 @@
     }
   },
   "removePlayerTooltip": "Remove player",
+  "gameModeSectionLabel": "Game Mode",
+  "winnerNextModeLabel": "Winner goes next",
+  "winnerNextModeDescription": "The guesser mimes next",
+  "sequenceModeLabel": "Turn Order",
+  "sequenceModeDescription": "Players take turns in order",
+  "whoGuessedLabel": "Who guessed it?",
   "roundsOptionalLabel": "Rounds (optional)",
   "positiveRoundsError": "Please enter a positive number of rounds",
   "timeOptionalLabel": "Time (Min:Sec, optional)",

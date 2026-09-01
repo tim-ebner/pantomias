@@ -218,6 +218,42 @@ abstract class AppLocalizations {
   /// **'Spieler entfernen'**
   String get removePlayerTooltip;
 
+  /// No description provided for @gameModeSectionLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Spielmodus'**
+  String get gameModeSectionLabel;
+
+  /// No description provided for @winnerNextModeLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Wer gewinnt, ist dran'**
+  String get winnerNextModeLabel;
+
+  /// No description provided for @winnerNextModeDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Rateperson pantomimiert als Nächstes'**
+  String get winnerNextModeDescription;
+
+  /// No description provided for @sequenceModeLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Reihenfolge'**
+  String get sequenceModeLabel;
+
+  /// No description provided for @sequenceModeDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Spieler wechseln sich der Reihe nach ab'**
+  String get sequenceModeDescription;
+
+  /// No description provided for @whoGuessedLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Wer hat\'s erraten?'**
+  String get whoGuessedLabel;
+
   /// No description provided for @roundsOptionalLabel.
   ///
   /// In de, this message translates to:

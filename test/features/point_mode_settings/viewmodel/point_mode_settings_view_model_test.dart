@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pantomias/core/data/game_mode.dart';
 import 'package:pantomias/core/data/scored_game_settings_repository.dart';
 import 'package:pantomias/features/point_mode_settings/viewmodel/point_mode_settings_view_model.dart';
 
@@ -9,11 +10,16 @@ class _MockScoredGameSettingsRepository extends Mock
 void main() {
   late _MockScoredGameSettingsRepository repository;
 
+  setUpAll(() {
+    registerFallbackValue(GameMode.winnerNext);
+  });
+
   setUp(() {
     repository = _MockScoredGameSettingsRepository();
     when(() => repository.loadPlayerNames()).thenReturn([]);
     when(() => repository.loadRoundLimitText()).thenReturn('');
     when(() => repository.loadTurnTimeLimitText()).thenReturn('');
+    when(() => repository.loadGameMode()).thenReturn(GameMode.winnerNext);
     when(
       () => repository.save(
         playerNames: any(named: 'playerNames'),
@@ -21,6 +27,7 @@ void main() {
         turnTimeLimitText: any(named: 'turnTimeLimitText'),
       ),
     ).thenAnswer((_) async {});
+    when(() => repository.saveGameMode(any())).thenAnswer((_) async {});
   });
 
   PointModeSettingsViewModel createViewModel() {
@@ -39,6 +46,20 @@ void main() {
       expect(viewModel.canStartScoredGame, isFalse);
     });
 
+    test('defaults gameMode to winnerNext when nothing is saved', () {
+      final viewModel = createViewModel();
+
+      expect(viewModel.gameMode, GameMode.winnerNext);
+    });
+
+    test('restores a saved gameMode', () {
+      when(() => repository.loadGameMode()).thenReturn(GameMode.sequence);
+
+      final viewModel = createViewModel();
+
+      expect(viewModel.gameMode, GameMode.sequence);
+    });
+
     test('restores saved players, round limit, and turn time limit', () {
       when(
         () => repository.loadPlayerNames(),
@@ -48,10 +69,11 @@ void main() {
 
       final viewModel = createViewModel();
 
-      expect(
-        viewModel.setupPlayers.map((player) => player.name),
-        ['Ada', 'Ben', 'Cara'],
-      );
+      expect(viewModel.setupPlayers.map((player) => player.name), [
+        'Ada',
+        'Ben',
+        'Cara',
+      ]);
       expect(viewModel.roundLimitText, '3');
       expect(viewModel.turnTimeLimitText, '1:30');
     });
@@ -109,19 +131,22 @@ void main() {
       expect(viewModel.setupPlayers, hasLength(3));
     });
 
-    test('removeSetupPlayer removes the given player when above the minimum', () {
-      final viewModel = createViewModel();
-      viewModel.addSetupPlayer();
-      final playerId = viewModel.setupPlayers.first.id;
+    test(
+      'removeSetupPlayer removes the given player when above the minimum',
+      () {
+        final viewModel = createViewModel();
+        viewModel.addSetupPlayer();
+        final playerId = viewModel.setupPlayers.first.id;
 
-      viewModel.removeSetupPlayer(playerId);
+        viewModel.removeSetupPlayer(playerId);
 
-      expect(viewModel.setupPlayers, hasLength(2));
-      expect(
-        viewModel.setupPlayers.map((player) => player.id),
-        isNot(contains(playerId)),
-      );
-    });
+        expect(viewModel.setupPlayers, hasLength(2));
+        expect(
+          viewModel.setupPlayers.map((player) => player.id),
+          isNot(contains(playerId)),
+        );
+      },
+    );
 
     test('removeSetupPlayer is a no-op at the two-player minimum', () {
       final viewModel = createViewModel();
@@ -140,6 +165,20 @@ void main() {
       viewModel.removeSetupPlayer(viewModel.setupPlayers.first.id);
 
       expect(viewModel.setupPlayers, hasLength(2));
+    });
+  });
+
+  group('selectGameMode', () {
+    test('updates gameMode', () {
+      final viewModel = createViewModel();
+
+      viewModel.selectGameMode(GameMode.sequence);
+
+      expect(viewModel.gameMode, GameMode.sequence);
+
+      viewModel.selectGameMode(GameMode.winnerNext);
+
+      expect(viewModel.gameMode, GameMode.winnerNext);
     });
   });
 
@@ -198,6 +237,7 @@ void main() {
       viewModel.updateSetupPlayerName(1, 'Bob');
       viewModel.updateRoundLimit('4');
       viewModel.updateTurnTimeLimit('2:15');
+      viewModel.selectGameMode(GameMode.sequence);
 
       final settings = viewModel.createGameSettings();
 
@@ -205,6 +245,7 @@ void main() {
       expect(settings!.playerNames, ['Alice', 'Bob']);
       expect(settings.roundLimit, 4);
       expect(settings.turnTimeLimit, const Duration(minutes: 2, seconds: 15));
+      expect(settings.gameMode, GameMode.sequence);
     });
   });
 
@@ -213,6 +254,7 @@ void main() {
     viewModel.updateSetupPlayerName(0, 'Alice');
     viewModel.updateSetupPlayerName(1, 'Bob');
     viewModel.updateRoundLimit('2');
+    viewModel.selectGameMode(GameMode.sequence);
 
     viewModel.saveCurrentSettings();
 
@@ -223,5 +265,6 @@ void main() {
         turnTimeLimitText: '',
       ),
     ).called(1);
+    verify(() => repository.saveGameMode(GameMode.sequence)).called(1);
   });
 }

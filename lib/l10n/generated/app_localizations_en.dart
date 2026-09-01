@@ -77,6 +77,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removePlayerTooltip => 'Remove player';
 
   @override
+  String get gameModeSectionLabel => 'Game Mode';
+
+  @override
+  String get winnerNextModeLabel => 'Winner goes next';
+
+  @override
+  String get winnerNextModeDescription => 'The guesser mimes next';
+
+  @override
+  String get sequenceModeLabel => 'Turn Order';
+
+  @override
+  String get sequenceModeDescription => 'Players take turns in order';
+
+  @override
+  String get whoGuessedLabel => 'Who guessed it?';
+
+  @override
   String get roundsOptionalLabel => 'Rounds (optional)';
 
   @override

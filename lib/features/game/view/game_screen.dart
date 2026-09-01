@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pantomias/core/data/game_mode.dart';
 import 'package:pantomias/l10n/l10n.dart';
 import 'package:pantomias/shared/widgets/stage_card.dart';
 
 import '../viewmodel/game_view_model.dart';
+import 'widgets/guesser_chooser.dart';
 import 'widgets/score_board.dart';
 import 'widgets/scored_turn_actions.dart';
 import 'widgets/turn_timer_ring.dart';
@@ -17,7 +19,7 @@ class GameScreen extends StatefulWidget {
 
   final GameViewModel viewModel;
   final VoidCallback onNotGuessed;
-  final VoidCallback onGuessed;
+  final void Function({int? guesserIndex}) onGuessed;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -30,6 +32,7 @@ class _GameScreenState extends State<GameScreen>
   late final AnimationController _advanceController;
   StageFeedback? _transientFeedback;
   VoidCallback? _pendingCallback;
+  bool _awaitingGuesser = false;
 
   @override
   void initState() {
@@ -60,18 +63,33 @@ class _GameScreenState extends State<GameScreen>
   }
 
   void _handleGuessed() {
-    if (_transientFeedback != null) {
+    if (_transientFeedback != null || _awaitingGuesser) {
       return;
     }
-    setState(() => _transientFeedback = StageFeedback.correct);
-    _pendingCallback = widget.onGuessed;
+    if (widget.viewModel.gameMode == GameMode.winnerNext) {
+      setState(() => _awaitingGuesser = true);
+      return;
+    }
+    _confirmGuess();
+  }
+
+  void _handleGuesserPicked(int guesserIndex) {
+    _confirmGuess(guesserIndex: guesserIndex);
+  }
+
+  void _confirmGuess({int? guesserIndex}) {
+    setState(() {
+      _awaitingGuesser = false;
+      _transientFeedback = StageFeedback.correct;
+    });
+    _pendingCallback = () => widget.onGuessed(guesserIndex: guesserIndex);
     _advanceController
       ..duration = const Duration(milliseconds: 900)
       ..forward(from: 0.0);
   }
 
   void _handleNotGuessed() {
-    if (_transientFeedback != null) {
+    if (_transientFeedback != null || _awaitingGuesser) {
       return;
     }
     setState(() => _transientFeedback = StageFeedback.wrong);
@@ -101,7 +119,7 @@ class _GameScreenState extends State<GameScreen>
         final isExpired = remaining == Duration.zero;
         final effectiveFeedback =
             _transientFeedback ?? (isExpired ? StageFeedback.expired : null);
-        final isBusy = _transientFeedback != null;
+        final isBusy = _transientFeedback != null || _awaitingGuesser;
 
         final imageDeckViewModel = viewModel.imageDeckViewModel;
         final currentImage = imageDeckViewModel.currentImage;
@@ -131,13 +149,18 @@ class _GameScreenState extends State<GameScreen>
                       isRevealed: isImageShown,
                       promptWord: currentImage == null
                           ? ''
-                          : context.l10n.pantomimePrompt(
-                              currentImage.promptId,
-                            ),
+                          : context.l10n.pantomimePrompt(currentImage.promptId),
                       imageAssetPath: currentImage?.imageUrl,
                       feedback: effectiveFeedback,
-                      onTap: effectiveFeedback == null
+                      onTap: effectiveFeedback == null && !_awaitingGuesser
                           ? _handleToggleReveal
+                          : null,
+                      overlay: _awaitingGuesser
+                          ? GuesserChooser(
+                              players: viewModel.players,
+                              activePlayerIndex: viewModel.activePlayerIndex,
+                              onPick: _handleGuesserPicked,
+                            )
                           : null,
                     ),
                   ),
