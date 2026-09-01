@@ -31,6 +31,17 @@ results look visibly worse.
   Keep the description to the subject only — the script appends the shared
   style suffix (outline, flat colors, transparent background, etc.)
   automatically, so don't repeat style words here.
+- Inanimate objects (backpack, kettle, hammer, ...) should read as plain
+  objects, not characters — the shared style suffix already tells the model
+  not to give them a face/eyes, so just describe the object itself (e.g.
+  `hammer="a cute hammer"`), don't add "character" or personify it.
+- For human/professional/fantasy characters, don't let the batch default to
+  all-male: vary gender explicitly across the words you pick, e.g.
+  `doctor="a cute female doctor character with a stethoscope"`,
+  `pilot="a cute male pilot character with an aviator cap"`, or omit gender
+  entirely for a gender-neutral design. Look at the genders already implied
+  by existing prompt strings in `app_de.arb`/`app_en.arb` before deciding
+  which way to lean for a new word.
 
 ## 2. Make sure `OPENAI_API_KEY` is reachable
 

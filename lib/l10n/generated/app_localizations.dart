@@ -1219,6 +1219,114 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Hexe'**
   String get promptWitch;
+
+  /// No description provided for @promptAlien.
+  ///
+  /// In de, this message translates to:
+  /// **'Alien'**
+  String get promptAlien;
+
+  /// No description provided for @promptAlpaca.
+  ///
+  /// In de, this message translates to:
+  /// **'Alpaka'**
+  String get promptAlpaca;
+
+  /// No description provided for @promptDoctor.
+  ///
+  /// In de, this message translates to:
+  /// **'Arzt'**
+  String get promptDoctor;
+
+  /// No description provided for @promptFishing.
+  ///
+  /// In de, this message translates to:
+  /// **'Angeln'**
+  String get promptFishing;
+
+  /// No description provided for @promptHammer.
+  ///
+  /// In de, this message translates to:
+  /// **'Hammer'**
+  String get promptHammer;
+
+  /// No description provided for @promptMummy.
+  ///
+  /// In de, this message translates to:
+  /// **'Mumie'**
+  String get promptMummy;
+
+  /// No description provided for @promptOtter.
+  ///
+  /// In de, this message translates to:
+  /// **'Otter'**
+  String get promptOtter;
+
+  /// No description provided for @promptPainter.
+  ///
+  /// In de, this message translates to:
+  /// **'Maler'**
+  String get promptPainter;
+
+  /// No description provided for @promptPeacock.
+  ///
+  /// In de, this message translates to:
+  /// **'Pfau'**
+  String get promptPeacock;
+
+  /// No description provided for @promptPilot.
+  ///
+  /// In de, this message translates to:
+  /// **'Pilot'**
+  String get promptPilot;
+
+  /// No description provided for @promptPlatypus.
+  ///
+  /// In de, this message translates to:
+  /// **'Schnabeltier'**
+  String get promptPlatypus;
+
+  /// No description provided for @promptRhino.
+  ///
+  /// In de, this message translates to:
+  /// **'Nashorn'**
+  String get promptRhino;
+
+  /// No description provided for @promptSeal.
+  ///
+  /// In de, this message translates to:
+  /// **'Robbe'**
+  String get promptSeal;
+
+  /// No description provided for @promptSinging.
+  ///
+  /// In de, this message translates to:
+  /// **'Singen'**
+  String get promptSinging;
+
+  /// No description provided for @promptSleeping.
+  ///
+  /// In de, this message translates to:
+  /// **'Schlafen'**
+  String get promptSleeping;
+
+  /// No description provided for @promptSloth.
+  ///
+  /// In de, this message translates to:
+  /// **'Faultier'**
+  String get promptSloth;
+
+  /// No description provided for @promptTelephone.
+  ///
+  /// In de, this message translates to:
+  /// **'Telefon'**
+  String get promptTelephone;
+
+  /// No description provided for @promptVampire.
+  ///
+  /// In de, this message translates to:
+  /// **'Vampir'**
+  String get promptVampire;
 }
 
 class _AppLocalizationsDelegate

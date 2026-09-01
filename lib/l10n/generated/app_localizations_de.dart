@@ -588,4 +588,58 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get promptWitch => 'Hexe';
+
+  @override
+  String get promptAlien => 'Alien';
+
+  @override
+  String get promptAlpaca => 'Alpaka';
+
+  @override
+  String get promptDoctor => 'Arzt';
+
+  @override
+  String get promptFishing => 'Angeln';
+
+  @override
+  String get promptHammer => 'Hammer';
+
+  @override
+  String get promptMummy => 'Mumie';
+
+  @override
+  String get promptOtter => 'Otter';
+
+  @override
+  String get promptPainter => 'Maler';
+
+  @override
+  String get promptPeacock => 'Pfau';
+
+  @override
+  String get promptPilot => 'Pilot';
+
+  @override
+  String get promptPlatypus => 'Schnabeltier';
+
+  @override
+  String get promptRhino => 'Nashorn';
+
+  @override
+  String get promptSeal => 'Robbe';
+
+  @override
+  String get promptSinging => 'Singen';
+
+  @override
+  String get promptSleeping => 'Schlafen';
+
+  @override
+  String get promptSloth => 'Faultier';
+
+  @override
+  String get promptTelephone => 'Telefon';
+
+  @override
+  String get promptVampire => 'Vampir';
 }
