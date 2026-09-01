@@ -1,10 +1,13 @@
 name: Release
 
+run-name: >-
+  Release${{ inputs.version != '' && format(' v{0}', inputs.version) || format(' #{0}', github.run_number) }}
+
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Override version as X.Y.Z+B (leave empty to auto-bump patch)"
+        description: "Override version as X.Y.Z (leave empty to auto-bump patch; build number always auto-increments)"
         required: false
         type: string
 

@@ -2,14 +2,18 @@
 // version string on stdout as the last line, so CI can capture it with
 // `$(dart run tool/bump_version.dart [override])`.
 //
-// With no argument (or an empty one): bumps the patch component and the
-// build number by 1, keeping major/minor unchanged.
-// With an argument matching X.Y.Z+B: uses that value verbatim as an
-// explicit override.
+// The build number always auto-increments by 1 — app stores reject a
+// build that doesn't strictly increase, so it's never taken from the
+// override, only computed from the current pubspec.yaml.
+//
+// With no argument (or an empty one): bumps the patch component by 1,
+// keeping major/minor unchanged.
+// With an argument matching X.Y.Z: uses that as the major.minor.patch,
+// still auto-incrementing the build number.
 import 'dart:io';
 
 final _versionLine = RegExp(r'^version:\s*(\d+)\.(\d+)\.(\d+)\+(\d+)\s*$');
-final _overrideFormat = RegExp(r'^\d+\.\d+\.\d+\+\d+$');
+final _overrideFormat = RegExp(r'^(\d+)\.(\d+)\.(\d+)$');
 
 void main(List<String> args) {
   final pubspecFile = File('pubspec.yaml');
@@ -23,25 +27,31 @@ void main(List<String> args) {
     exit(1);
   }
 
+  final current = _versionLine.firstMatch(lines[lineIndex])!;
+  final build = int.parse(current.group(4)!) + 1;
+
   final override = args.isNotEmpty ? args.first.trim() : '';
-  final String newVersion;
+  final int major;
+  final int minor;
+  final int patch;
   if (override.isEmpty) {
-    final match = _versionLine.firstMatch(lines[lineIndex])!;
-    final major = int.parse(match.group(1)!);
-    final minor = int.parse(match.group(2)!);
-    final patch = int.parse(match.group(3)!) + 1;
-    final build = int.parse(match.group(4)!) + 1;
-    newVersion = '$major.$minor.$patch+$build';
+    major = int.parse(current.group(1)!);
+    minor = int.parse(current.group(2)!);
+    patch = int.parse(current.group(3)!) + 1;
   } else {
-    if (!_overrideFormat.hasMatch(override)) {
+    final overrideMatch = _overrideFormat.firstMatch(override);
+    if (overrideMatch == null) {
       stderr.writeln(
-        'Invalid version override "$override" — expected format X.Y.Z+B',
+        'Invalid version override "$override" — expected format X.Y.Z',
       );
       exit(1);
     }
-    newVersion = override;
+    major = int.parse(overrideMatch.group(1)!);
+    minor = int.parse(overrideMatch.group(2)!);
+    patch = int.parse(overrideMatch.group(3)!);
   }
 
+  final newVersion = '$major.$minor.$patch+$build';
   lines[lineIndex] = 'version: $newVersion';
   pubspecFile.writeAsStringSync('${lines.join('\n')}\n');
 
