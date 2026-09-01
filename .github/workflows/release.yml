@@ -209,7 +209,7 @@ jobs:
       - run: flutter pub get
 
       - name: Bump pubspec.yaml version
-        run: dart run tool/bump_version.dart "${{ needs.prepare.outputs.version }}"
+        run: dart run tool/bump_version.dart "${{ needs.prepare.outputs.build_name }}"
 
       - name: Commit and push
         run: |
