@@ -89,7 +89,6 @@ class ImageMetaInfoRepository {
       _imageMetaInfo('assets/images/pants/owl.webp'),
       _imageMetaInfo('assets/images/pants/panda.webp'),
       _imageMetaInfo('assets/images/pants/parrot.webp'),
-      _imageMetaInfo('assets/images/pants/pelican.webp'),
       _imageMetaInfo('assets/images/pants/pencil.webp'),
       _imageMetaInfo('assets/images/pants/penguin2.webp'),
       _imageMetaInfo('assets/images/pants/pig.webp'),

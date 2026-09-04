@@ -884,12 +884,6 @@ abstract class AppLocalizations {
   /// **'Papagei'**
   String get promptParrot;
 
-  /// No description provided for @promptPelican.
-  ///
-  /// In de, this message translates to:
-  /// **'Pelikane'**
-  String get promptPelican;
-
   /// No description provided for @promptPencil.
   ///
   /// In de, this message translates to:

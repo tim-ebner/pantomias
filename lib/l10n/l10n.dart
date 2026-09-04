@@ -106,7 +106,6 @@ extension AppLocalizationsX on AppLocalizations {
       'owl' => promptOwl,
       'panda' => promptPanda,
       'parrot' => promptParrot,
-      'pelican' => promptPelican,
       'pencil' => promptPencil,
       'penguin2' => promptPenguin2,
       'pig' => promptPig,

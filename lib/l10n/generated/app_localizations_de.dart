@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -420,9 +421,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get promptParrot => 'Papagei';
-
-  @override
-  String get promptPelican => 'Pelikane';
 
   @override
   String get promptPencil => 'Bleistift';
