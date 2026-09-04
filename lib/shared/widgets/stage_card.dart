@@ -179,9 +179,11 @@ class _RevealedContent extends StatelessWidget {
 
 /// Renders [word] as large as possible on a single line within
 /// [maxWidth], shrinking the font size from [_maxFontSize] down to
-/// [_minFontSize]. If even the minimum size doesn't fit on one line,
-/// falls back to [_minFontSize] with a wrapped second line and an
-/// ellipsis for anything beyond that.
+/// [_minFontSize]. Only once even [_minFontSize] doesn't fit on one line
+/// does it wrap to a second line, shrinking further (down to
+/// [_minWrappedFontSize]) to make the two-line layout fit. An ellipsis is
+/// used only as a last resort, once the two-line layout at
+/// [_minWrappedFontSize] still doesn't fit.
 class _ShrinkToFitHeadline extends StatelessWidget {
   const _ShrinkToFitHeadline({required this.word, required this.maxWidth});
 
@@ -190,28 +192,45 @@ class _ShrinkToFitHeadline extends StatelessWidget {
 
   static const _maxFontSize = 44.0;
   static const _minFontSize = 24.0;
+  static const _minWrappedFontSize = 18.0;
   static const _fontSizeStep = 2.0;
   static const _fontWeight = FontWeight.w900;
   static const _lineHeight = 1.05;
 
-  TextStyle _styleFor(double fontSize) => const TextStyle(
-    fontWeight: _fontWeight,
-    color: brandColor,
-    height: _lineHeight,
-  ).copyWith(fontSize: fontSize);
+  /// Resolves the fully-inherited style for [fontSize], merged onto
+  /// [ambientStyle] (the nearest `DefaultTextStyle`) so it carries the same
+  /// font family/letter spacing that the rendered `Text` would inherit —
+  /// otherwise measuring against a bare style under-counts the real width
+  /// and the fit check below can pick a size that still overflows.
+  TextStyle _styleFor(double fontSize, TextStyle ambientStyle) =>
+      ambientStyle.merge(
+        TextStyle(
+          fontWeight: _fontWeight,
+          color: brandColor,
+          height: _lineHeight,
+          fontSize: fontSize,
+        ),
+      );
 
-  /// Largest font size in [_minFontSize].._maxFontSize] at which [word]
-  /// fits on a single line within [maxWidth], or `null` if even
-  /// [_minFontSize] doesn't fit on one line.
-  double? _resolveSingleLineFontSize(TextScaler textScaler) {
-    final steps = ((_maxFontSize - _minFontSize) / _fontSizeStep).floor();
+  /// Largest font size in [minFontSize].._maxFontSize] at which [word]
+  /// fits within [maxLines] lines of [maxWidth], or `null` if even
+  /// [minFontSize] doesn't fit.
+  double? _resolveFontSize({
+    required int maxLines,
+    required double minFontSize,
+    required TextScaler textScaler,
+    required TextStyle ambientStyle,
+  }) {
+    final steps = ((_maxFontSize - minFontSize) / _fontSizeStep).floor();
     for (var i = 0; i <= steps; i++) {
       final fontSize = _maxFontSize - i * _fontSizeStep;
       final painter = TextPainter(
-        text: TextSpan(text: word, style: _styleFor(fontSize)),
+        text: TextSpan(text: word, style: _styleFor(fontSize, ambientStyle)),
         textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
         textScaler: textScaler,
-        maxLines: 1,
+        maxLines: maxLines,
+        ellipsis: '…',
       )..layout(maxWidth: maxWidth);
       if (!painter.didExceedMaxLines) {
         return fontSize;
@@ -223,14 +242,35 @@ class _ShrinkToFitHeadline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
-    final singleLineFontSize = _resolveSingleLineFontSize(textScaler);
+    final ambientStyle = DefaultTextStyle.of(context).style;
+    final singleLineFontSize = _resolveFontSize(
+      maxLines: 1,
+      minFontSize: _minFontSize,
+      textScaler: textScaler,
+      ambientStyle: ambientStyle,
+    );
+    if (singleLineFontSize != null) {
+      return Text(
+        word,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: _styleFor(singleLineFontSize, ambientStyle),
+      );
+    }
 
+    final wrappedFontSize = _resolveFontSize(
+      maxLines: 2,
+      minFontSize: _minWrappedFontSize,
+      textScaler: textScaler,
+      ambientStyle: ambientStyle,
+    );
     return Text(
       word,
-      maxLines: singleLineFontSize != null ? 1 : 2,
+      maxLines: 2,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,
-      style: _styleFor(singleLineFontSize ?? _minFontSize),
+      style: _styleFor(wrappedFontSize ?? _minWrappedFontSize, ambientStyle),
     );
   }
 }
