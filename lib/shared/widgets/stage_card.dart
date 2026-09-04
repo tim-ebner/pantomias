@@ -146,17 +146,13 @@ class _RevealedContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Column(
         children: [
-          Text(
-            word,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 44.0,
-              fontWeight: FontWeight.w900,
-              color: brandColor,
-              height: 1.05,
-            ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return _ShrinkToFitHeadline(
+                word: word,
+                maxWidth: constraints.maxWidth,
+              );
+            },
           ),
           const SizedBox(height: 16.0),
           if (imageAssetPath != null)
@@ -177,6 +173,64 @@ class _RevealedContent extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Renders [word] as large as possible on a single line within
+/// [maxWidth], shrinking the font size from [_maxFontSize] down to
+/// [_minFontSize]. If even the minimum size doesn't fit on one line,
+/// falls back to [_minFontSize] with a wrapped second line and an
+/// ellipsis for anything beyond that.
+class _ShrinkToFitHeadline extends StatelessWidget {
+  const _ShrinkToFitHeadline({required this.word, required this.maxWidth});
+
+  final String word;
+  final double maxWidth;
+
+  static const _maxFontSize = 44.0;
+  static const _minFontSize = 24.0;
+  static const _fontSizeStep = 2.0;
+  static const _fontWeight = FontWeight.w900;
+  static const _lineHeight = 1.05;
+
+  TextStyle _styleFor(double fontSize) => const TextStyle(
+    fontWeight: _fontWeight,
+    color: brandColor,
+    height: _lineHeight,
+  ).copyWith(fontSize: fontSize);
+
+  /// Largest font size in [_minFontSize].._maxFontSize] at which [word]
+  /// fits on a single line within [maxWidth], or `null` if even
+  /// [_minFontSize] doesn't fit on one line.
+  double? _resolveSingleLineFontSize(TextScaler textScaler) {
+    final steps = ((_maxFontSize - _minFontSize) / _fontSizeStep).floor();
+    for (var i = 0; i <= steps; i++) {
+      final fontSize = _maxFontSize - i * _fontSizeStep;
+      final painter = TextPainter(
+        text: TextSpan(text: word, style: _styleFor(fontSize)),
+        textDirection: TextDirection.ltr,
+        textScaler: textScaler,
+        maxLines: 1,
+      )..layout(maxWidth: maxWidth);
+      if (!painter.didExceedMaxLines) {
+        return fontSize;
+      }
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textScaler = MediaQuery.textScalerOf(context);
+    final singleLineFontSize = _resolveSingleLineFontSize(textScaler);
+
+    return Text(
+      word,
+      maxLines: singleLineFontSize != null ? 1 : 2,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+      style: _styleFor(singleLineFontSize ?? _minFontSize),
     );
   }
 }
