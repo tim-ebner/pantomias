@@ -158,6 +158,19 @@ class ImageMetaInfoRepository {
       _imageMetaInfo('assets/images/pants/sloth.webp'),
       _imageMetaInfo('assets/images/pants/telephone.webp'),
       _imageMetaInfo('assets/images/pants/vampire.webp'),
+      _imageMetaInfo('assets/images/pants/walrus.webp'),
+      _imageMetaInfo('assets/images/pants/jellyfish.webp'),
+      _imageMetaInfo('assets/images/pants/beaver.webp'),
+      _imageMetaInfo('assets/images/pants/seahorse.webp'),
+      _imageMetaInfo('assets/images/pants/teacher.webp'),
+      _imageMetaInfo('assets/images/pants/police_officer.webp'),
+      _imageMetaInfo('assets/images/pants/mechanic.webp'),
+      _imageMetaInfo('assets/images/pants/teapot.webp'),
+      _imageMetaInfo('assets/images/pants/vacuum_cleaner.webp'),
+      _imageMetaInfo('assets/images/pants/laptop.webp'),
+      _imageMetaInfo('assets/images/pants/sock.webp'),
+      _imageMetaInfo('assets/images/pants/juggling.webp'),
+      _imageMetaInfo('assets/images/pants/sneezing.webp'),
     ];
   }
 

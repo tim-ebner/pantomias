@@ -224,6 +224,19 @@ flutter:
     - assets/images/pants/sloth.webp
     - assets/images/pants/telephone.webp
     - assets/images/pants/vampire.webp
+    - assets/images/pants/walrus.webp
+    - assets/images/pants/jellyfish.webp
+    - assets/images/pants/beaver.webp
+    - assets/images/pants/seahorse.webp
+    - assets/images/pants/teacher.webp
+    - assets/images/pants/police_officer.webp
+    - assets/images/pants/mechanic.webp
+    - assets/images/pants/teapot.webp
+    - assets/images/pants/vacuum_cleaner.webp
+    - assets/images/pants/laptop.webp
+    - assets/images/pants/sock.webp
+    - assets/images/pants/juggling.webp
+    - assets/images/pants/sneezing.webp
 
 
   # To add assets to your application, add an assets section, like this:

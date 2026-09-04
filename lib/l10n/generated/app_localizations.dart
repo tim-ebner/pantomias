@@ -1297,6 +1297,84 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Vampir'**
   String get promptVampire;
+
+  /// No description provided for @promptWalrus.
+  ///
+  /// In de, this message translates to:
+  /// **'Walross'**
+  String get promptWalrus;
+
+  /// No description provided for @promptJellyfish.
+  ///
+  /// In de, this message translates to:
+  /// **'Qualle'**
+  String get promptJellyfish;
+
+  /// No description provided for @promptBeaver.
+  ///
+  /// In de, this message translates to:
+  /// **'Biber'**
+  String get promptBeaver;
+
+  /// No description provided for @promptSeahorse.
+  ///
+  /// In de, this message translates to:
+  /// **'Seepferdchen'**
+  String get promptSeahorse;
+
+  /// No description provided for @promptTeacher.
+  ///
+  /// In de, this message translates to:
+  /// **'Lehrerin'**
+  String get promptTeacher;
+
+  /// No description provided for @promptPoliceOfficer.
+  ///
+  /// In de, this message translates to:
+  /// **'Polizistin'**
+  String get promptPoliceOfficer;
+
+  /// No description provided for @promptMechanic.
+  ///
+  /// In de, this message translates to:
+  /// **'Mechanikerin'**
+  String get promptMechanic;
+
+  /// No description provided for @promptTeapot.
+  ///
+  /// In de, this message translates to:
+  /// **'Teekanne'**
+  String get promptTeapot;
+
+  /// No description provided for @promptVacuumCleaner.
+  ///
+  /// In de, this message translates to:
+  /// **'Staubsauger'**
+  String get promptVacuumCleaner;
+
+  /// No description provided for @promptLaptop.
+  ///
+  /// In de, this message translates to:
+  /// **'Laptop'**
+  String get promptLaptop;
+
+  /// No description provided for @promptSock.
+  ///
+  /// In de, this message translates to:
+  /// **'Socke'**
+  String get promptSock;
+
+  /// No description provided for @promptJuggling.
+  ///
+  /// In de, this message translates to:
+  /// **'Jonglieren'**
+  String get promptJuggling;
+
+  /// No description provided for @promptSneezing.
+  ///
+  /// In de, this message translates to:
+  /// **'Niesen'**
+  String get promptSneezing;
 }
 
 class _AppLocalizationsDelegate

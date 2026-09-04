@@ -247,5 +247,18 @@
   "promptSleeping": "Sleeping",
   "promptSloth": "Sloth",
   "promptTelephone": "Telephone",
-  "promptVampire": "Vampire"
+  "promptVampire": "Vampire",
+  "promptWalrus": "Walrus",
+  "promptJellyfish": "Jellyfish",
+  "promptBeaver": "Beaver",
+  "promptSeahorse": "Seahorse",
+  "promptTeacher": "Teacher",
+  "promptPoliceOfficer": "Police officer",
+  "promptMechanic": "Mechanic",
+  "promptTeapot": "Teapot",
+  "promptVacuumCleaner": "Vacuum cleaner",
+  "promptLaptop": "Laptop",
+  "promptSock": "Sock",
+  "promptJuggling": "Juggling",
+  "promptSneezing": "Sneezing"
 }
