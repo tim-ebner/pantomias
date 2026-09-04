@@ -270,7 +270,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promptMonkey => 'Monkey';
 
   @override
-  String get promptOpenBook => 'Open Book';
+  String get promptBook => 'Book';
 
   @override
   String get promptSoccerBall => 'Soccer Ball';

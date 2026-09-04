@@ -272,7 +272,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get promptMonkey => 'Affe';
 
   @override
-  String get promptOpenBook => 'Offenes Buch';
+  String get promptBook => 'Buch';
 
   @override
   String get promptSoccerBall => 'Fußball';

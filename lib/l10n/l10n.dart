@@ -56,7 +56,7 @@ extension AppLocalizationsX on AppLocalizations {
       'unicorn' => promptUnicorn,
       'volleyball' => promptVolleyball,
       'monkey' => promptMonkey,
-      'open_book' => promptOpenBook,
+      'book' => promptBook,
       'soccer_ball' => promptSoccerBall,
       'balloon' => promptBalloon,
       'beanie' => promptBeanie,

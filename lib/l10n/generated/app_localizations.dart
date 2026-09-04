@@ -584,11 +584,11 @@ abstract class AppLocalizations {
   /// **'Affe'**
   String get promptMonkey;
 
-  /// No description provided for @promptOpenBook.
+  /// No description provided for @promptBook.
   ///
   /// In de, this message translates to:
-  /// **'Offenes Buch'**
-  String get promptOpenBook;
+  /// **'Buch'**
+  String get promptBook;
 
   /// No description provided for @promptSoccerBall.
   ///

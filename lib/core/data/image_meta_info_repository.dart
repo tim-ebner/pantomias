@@ -39,7 +39,7 @@ class ImageMetaInfoRepository {
       _imageMetaInfo('assets/images/pants/unicorn.webp'),
       _imageMetaInfo('assets/images/pants/volleyball.webp'),
       _imageMetaInfo('assets/images/pants/monkey.webp'),
-      _imageMetaInfo('assets/images/pants/open_book.webp'),
+      _imageMetaInfo('assets/images/pants/book.webp'),
       _imageMetaInfo('assets/images/pants/soccer_ball.webp'),
       _imageMetaInfo('assets/images/pants/balloon.webp'),
       _imageMetaInfo('assets/images/pants/beanie.webp'),
