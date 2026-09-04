@@ -1381,6 +1381,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Basketballspielerin'**
   String get promptBasketballPlayer;
+
+  /// No description provided for @promptBarbecueGrill.
+  ///
+  /// In de, this message translates to:
+  /// **'Grill'**
+  String get promptBarbecueGrill;
+
+  /// No description provided for @promptPilot.
+  ///
+  /// In de, this message translates to:
+  /// **'Pilot'**
+  String get promptPilot;
+
+  /// No description provided for @promptRiver.
+  ///
+  /// In de, this message translates to:
+  /// **'Fluss'**
+  String get promptRiver;
+
+  /// No description provided for @promptToiletPaper.
+  ///
+  /// In de, this message translates to:
+  /// **'Toilettenpapier'**
+  String get promptToiletPaper;
 }
 
 class _AppLocalizationsDelegate

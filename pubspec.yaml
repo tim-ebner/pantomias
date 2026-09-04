@@ -238,6 +238,10 @@ flutter:
     - assets/images/pants/sneezing.webp
     - assets/images/pants/yoga.webp
     - assets/images/pants/basketball_player.webp
+    - assets/images/pants/barbecue_grill.webp
+    - assets/images/pants/pilot.webp
+    - assets/images/pants/river.webp
+    - assets/images/pants/toilet_paper.webp
 
 
   # To add assets to your application, add an assets section, like this:

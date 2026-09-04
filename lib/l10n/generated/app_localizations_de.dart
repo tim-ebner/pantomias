@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -670,4 +669,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get promptBasketballPlayer => 'Basketballspielerin';
+
+  @override
+  String get promptBarbecueGrill => 'Grill';
+
+  @override
+  String get promptPilot => 'Pilot';
+
+  @override
+  String get promptRiver => 'Fluss';
+
+  @override
+  String get promptToiletPaper => 'Toilettenpapier';
 }

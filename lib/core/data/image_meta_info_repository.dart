@@ -172,6 +172,10 @@ class ImageMetaInfoRepository {
       _imageMetaInfo('assets/images/pants/sneezing.webp'),
       _imageMetaInfo('assets/images/pants/yoga.webp'),
       _imageMetaInfo('assets/images/pants/basketball_player.webp'),
+      _imageMetaInfo('assets/images/pants/barbecue_grill.webp'),
+      _imageMetaInfo('assets/images/pants/pilot.webp'),
+      _imageMetaInfo('assets/images/pants/river.webp'),
+      _imageMetaInfo('assets/images/pants/toilet_paper.webp'),
     ];
   }
 
