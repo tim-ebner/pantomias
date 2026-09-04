@@ -35,6 +35,18 @@ results look visibly worse.
   objects, not characters — the shared style suffix already tells the model
   not to give them a face/eyes, so just describe the object itself (e.g.
   `hammer="a cute hammer"`), don't add "character" or personify it.
+- Make each subject description funny in some way — a silly exaggerated
+  expression, a comedic pose, or an amusing incongruous detail — not just a
+  flat, neutral depiction. These are guessing-game cards, so a bit of humor
+  makes them more fun to act out and recognize. For living subjects, lean on
+  a goofy face/expression or funny action pose (e.g. `octopus="a cute
+  octopus juggling with a surprised expression"`, `firefighter="a cute
+  firefighter character sliding down a pole with a panicked grin"`).
+  Inanimate objects still can't get a face (see above), so their humor has
+  to come from an odd pose, exaggerated proportions, or a silly context
+  detail instead (e.g. `hammer="a cute hammer mid-swing, slightly bent from
+  overuse"`). Don't force humor so hard that the subject becomes unclear at
+  a glance — it still needs to be instantly guessable in a pantomime game.
 - For human/professional/fantasy characters, don't let the batch default to
   all-male: vary gender explicitly across the words you pick, e.g.
   `doctor="a cute female doctor character with a stethoscope"`,
