@@ -278,9 +278,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get promptSoccerBall => 'Fußball';
 
   @override
-  String get promptAlarmClock => 'Wecker';
-
-  @override
   String get promptBalloon => 'Ballon';
 
   @override
@@ -521,9 +518,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get promptTurtle => 'Schildkröte';
 
   @override
-  String get promptWatch => 'Uhr';
-
-  @override
   String get promptWhale => 'Wal';
 
   @override
@@ -552,9 +546,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get promptHippo => 'Nilpferd';
-
-  @override
-  String get promptJumping => 'Springen';
 
   @override
   String get promptKangaroo => 'Känguru';
@@ -593,9 +584,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get promptAlien => 'Alien';
 
   @override
-  String get promptAlpaca => 'Alpaka';
-
-  @override
   String get promptDoctor => 'Arzt';
 
   @override
@@ -615,9 +603,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get promptPeacock => 'Pfau';
-
-  @override
-  String get promptPilot => 'Pilot';
 
   @override
   String get promptPlatypus => 'Schnabeltier';

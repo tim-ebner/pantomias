@@ -276,9 +276,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promptSoccerBall => 'Soccer Ball';
 
   @override
-  String get promptAlarmClock => 'Alarm Clock';
-
-  @override
   String get promptBalloon => 'Balloon';
 
   @override
@@ -519,9 +516,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promptTurtle => 'Turtle';
 
   @override
-  String get promptWatch => 'Watch';
-
-  @override
   String get promptWhale => 'Whale';
 
   @override
@@ -550,9 +544,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get promptHippo => 'Hippo';
-
-  @override
-  String get promptJumping => 'Jumping';
 
   @override
   String get promptKangaroo => 'Kangaroo';
@@ -591,9 +582,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promptAlien => 'Alien';
 
   @override
-  String get promptAlpaca => 'Alpaca';
-
-  @override
   String get promptDoctor => 'Doctor';
 
   @override
@@ -613,9 +601,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get promptPeacock => 'Peacock';
-
-  @override
-  String get promptPilot => 'Pilot';
 
   @override
   String get promptPlatypus => 'Platypus';

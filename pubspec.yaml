@@ -107,7 +107,6 @@ flutter:
     - assets/images/pants/unicorn.webp
     - assets/images/pants/volleyball.webp
     - assets/images/pants/wizard.webp
-    - assets/images/pants/alarm_clock.webp
     - assets/images/pants/balloon.webp
     - assets/images/pants/beanie.webp
     - assets/images/pants/bear.webp
@@ -188,7 +187,6 @@ flutter:
     - assets/images/pants/toothbrush.webp
     - assets/images/pants/towel.webp
     - assets/images/pants/turtle.webp
-    - assets/images/pants/watch.webp
     - assets/images/pants/whale.webp
     - assets/images/pants/wolf.webp
     - assets/images/pants/zebra.webp
@@ -199,7 +197,6 @@ flutter:
     - assets/images/pants/flamingo.webp
     - assets/images/pants/ghost.webp
     - assets/images/pants/hippo.webp
-    - assets/images/pants/jumping.webp
     - assets/images/pants/kangaroo.webp
     - assets/images/pants/kite.webp
     - assets/images/pants/koala.webp
@@ -212,7 +209,6 @@ flutter:
     - assets/images/pants/violin.webp
     - assets/images/pants/witch.webp
     - assets/images/pants/alien.webp
-    - assets/images/pants/alpaca.webp
     - assets/images/pants/doctor.webp
     - assets/images/pants/fishing.webp
     - assets/images/pants/hammer.webp
@@ -220,7 +216,6 @@ flutter:
     - assets/images/pants/otter.webp
     - assets/images/pants/painter.webp
     - assets/images/pants/peacock.webp
-    - assets/images/pants/pilot.webp
     - assets/images/pants/platypus.webp
     - assets/images/pants/rhino.webp
     - assets/images/pants/seal.webp

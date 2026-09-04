@@ -596,12 +596,6 @@ abstract class AppLocalizations {
   /// **'Fußball'**
   String get promptSoccerBall;
 
-  /// No description provided for @promptAlarmClock.
-  ///
-  /// In de, this message translates to:
-  /// **'Wecker'**
-  String get promptAlarmClock;
-
   /// No description provided for @promptBalloon.
   ///
   /// In de, this message translates to:
@@ -1082,12 +1076,6 @@ abstract class AppLocalizations {
   /// **'Schildkröte'**
   String get promptTurtle;
 
-  /// No description provided for @promptWatch.
-  ///
-  /// In de, this message translates to:
-  /// **'Uhr'**
-  String get promptWatch;
-
   /// No description provided for @promptWhale.
   ///
   /// In de, this message translates to:
@@ -1147,12 +1135,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Nilpferd'**
   String get promptHippo;
-
-  /// No description provided for @promptJumping.
-  ///
-  /// In de, this message translates to:
-  /// **'Springen'**
-  String get promptJumping;
 
   /// No description provided for @promptKangaroo.
   ///
@@ -1226,12 +1208,6 @@ abstract class AppLocalizations {
   /// **'Alien'**
   String get promptAlien;
 
-  /// No description provided for @promptAlpaca.
-  ///
-  /// In de, this message translates to:
-  /// **'Alpaka'**
-  String get promptAlpaca;
-
   /// No description provided for @promptDoctor.
   ///
   /// In de, this message translates to:
@@ -1273,12 +1249,6 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Pfau'**
   String get promptPeacock;
-
-  /// No description provided for @promptPilot.
-  ///
-  /// In de, this message translates to:
-  /// **'Pilot'**
-  String get promptPilot;
 
   /// No description provided for @promptPlatypus.
   ///
