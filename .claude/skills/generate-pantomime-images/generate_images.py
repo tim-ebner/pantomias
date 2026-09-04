@@ -28,7 +28,7 @@ import requests
 from PIL import Image
 
 STYLE_SUFFIX = (
-    ", cute or funny cartoon illustration, thick bold black outline, simple friendly,"
+    ", cute and/or funny cartoon illustration, thick bold black outline, friendly,"
     "single centered subject, transparent background, no text, no shadow, "
     "no gradient background, inanimate objects and items are drawn plainly "
     "with no face and no eyes — only living subjects (people, animals, "
