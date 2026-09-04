@@ -171,6 +171,7 @@ class ImageMetaInfoRepository {
       _imageMetaInfo('assets/images/pants/sock.webp'),
       _imageMetaInfo('assets/images/pants/juggling.webp'),
       _imageMetaInfo('assets/images/pants/sneezing.webp'),
+      _imageMetaInfo('assets/images/pants/yoga.webp'),
     ];
   }
 

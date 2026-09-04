@@ -237,6 +237,7 @@ flutter:
     - assets/images/pants/sock.webp
     - assets/images/pants/juggling.webp
     - assets/images/pants/sneezing.webp
+    - assets/images/pants/yoga.webp
 
 
   # To add assets to your application, add an assets section, like this:

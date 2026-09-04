@@ -1375,6 +1375,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Niesen'**
   String get promptSneezing;
+
+  /// No description provided for @promptYoga.
+  ///
+  /// In de, this message translates to:
+  /// **'Yoga'**
+  String get promptYoga;
 }
 
 class _AppLocalizationsDelegate

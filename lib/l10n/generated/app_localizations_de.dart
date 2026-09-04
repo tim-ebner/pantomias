@@ -666,4 +666,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get promptSneezing => 'Niesen';
+
+  @override
+  String get promptYoga => 'Yoga';
 }
