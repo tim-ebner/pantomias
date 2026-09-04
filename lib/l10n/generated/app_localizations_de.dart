@@ -669,4 +669,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get promptYoga => 'Yoga';
+
+  @override
+  String get promptBasketballPlayer => 'Basketballspielerin';
 }

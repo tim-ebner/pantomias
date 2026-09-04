@@ -1381,6 +1381,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Yoga'**
   String get promptYoga;
+
+  /// No description provided for @promptBasketballPlayer.
+  ///
+  /// In de, this message translates to:
+  /// **'Basketballspielerin'**
+  String get promptBasketballPlayer;
 }
 
 class _AppLocalizationsDelegate

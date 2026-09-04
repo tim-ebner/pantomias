@@ -189,6 +189,7 @@ extension AppLocalizationsX on AppLocalizations {
       'juggling' => promptJuggling,
       'sneezing' => promptSneezing,
       'yoga' => promptYoga,
+      'basketball_player' => promptBasketballPlayer,
       _ => promptId,
     };
   }
