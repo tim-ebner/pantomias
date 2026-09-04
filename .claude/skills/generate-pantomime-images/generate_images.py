@@ -28,12 +28,11 @@ import requests
 from PIL import Image
 
 STYLE_SUFFIX = (
-    ", cute cartoon sticker illustration, thick bold black outline, "
-    "flat cel-shaded colors, simple friendly kawaii children's-book style, "
+    ", cute or funny cartoon illustration, thick bold black outline, simple friendly,"
     "single centered subject, transparent background, no text, no shadow, "
     "no gradient background, inanimate objects and items are drawn plainly "
     "with no face and no eyes — only living subjects (people, animals, "
-    "fantasy/humanoid characters) get a cute face; when depicting a human "
+    "fantasy/humanoid characters) get a cute or funny face; when depicting a human "
     "character whose gender isn't specified in the subject description, "
     "use a gender-neutral/ambiguous design rather than defaulting to male"
 )
